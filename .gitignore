@@ -1,15 +1,20 @@
 # Ignoring most directories and some files...
 /comparing/*
 /daughter_meson.py
-/dispersion
+/dispersion/*
 /extract
-/fitting
-/form_factors
+/fitting/*
+/form_factors/*
 /old_files_and_directory
 /stability_testing
-/z_expansion
+/z_expansion/*
 /z_fitting-and-or-plotting.py
 
 # But not the important files and subdirectories in certain directories
-
 !/comparing/compare_functions.py
+!/dispersion/dispersion_functions.py
+!/fitting/control.py
+!/fitting/functions.py
+!/form_factors/FF_functions_new.py
+!/z_expansion/z_ensemble_dicts.py
+!/z_expansion/z_functions.py
