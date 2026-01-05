@@ -1,3 +1,4 @@
+# Ignoring most directories and some files...
 /comparing
 /daughter_meson.py
 /dispersion
@@ -8,3 +9,7 @@
 /stability_testing
 /z_expansion
 /z_fitting-and-or-plotting.py
+
+# But not the important files and subdirectories in certain directories
+
+!*/comparing/compare_functions.py
