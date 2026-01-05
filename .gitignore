@@ -1,5 +1,5 @@
 # Ignoring most directories and some files...
-/comparing
+/comparing/*
 /daughter_meson.py
 /dispersion
 /extract
@@ -12,4 +12,4 @@
 
 # But not the important files and subdirectories in certain directories
 
-!*/comparing/compare_functions.py
+!/comparing/compare_functions.py
