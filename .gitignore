@@ -8,7 +8,6 @@
 /old_files_and_directory
 /stability_testing
 /z_expansion/*
-/z_fitting-and-or-plotting.py
 
 # But not the important files and subdirectories in certain directories
 !/comparing/compare_functions.py
