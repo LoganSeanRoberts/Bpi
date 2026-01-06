@@ -676,7 +676,7 @@ def make_prior(Fit,N,allcorrs,currents,daughters,parents,loosener,data,notwist0,
                         Vn   = '{0}({1})'.format(gv.gvar(Fit['{0}Vn'.format(corr)]).mean,  loosener*Fit['Vloosener']*gv.gvar(Fit['{0}Vn'.format(corr)]).sdev)
                         V0   = '{0}({1})'.format(gv.gvar(Fit['{0}V0'.format(corr)]).mean,  loosener*Fit['Vloosener']*gv.gvar(Fit['{0}V0'.format(corr)]).sdev)
                     V10_widener = Fit['V10_widener']
-                    Vosc00 = 1 #attempt to account for highly oscillating terms
+                    #Vosc00 = 1 #attempt to account for highly oscillating terms
                     
                     if twist =='0.0' and corr in notwist0:
                         pass
@@ -685,20 +685,20 @@ def make_prior(Fit,N,allcorrs,currents,daughters,parents,loosener,data,notwist0,
                         prior['{0}Vnn_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(Vnn0)
                         prior['{0}Vnn_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener    
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(N * [No* [Vn]])
-                        prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * V10_widener * Vosc00
+                        prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * V10_widener 
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener      
                     else:
                         prior['{0}Vnn_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(N * [N * [Vn]])
                         prior['{0}Vnn_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(Vnn0)
                         prior['{0}Vnn_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener   
                         prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(N * [No * [Vn]])
-                        prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * Vosc00
+                        prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) 
                         prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener  
                         prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(No * [No * [Vn]])
-                        prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * Vosc00
+                        prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * 
                         prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener  
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(No * [N * [Vn]])
-                        prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * V10_widener * Vosc00
+                        prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * V10_widener 
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener 
     return(prior)
             
