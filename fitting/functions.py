@@ -695,7 +695,7 @@ def make_prior(Fit,N,allcorrs,currents,daughters,parents,loosener,data,notwist0,
                         prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) 
                         prior['{0}Vno_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener  
                         prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(No * [No * [Vn]])
-                        prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * 
+                        prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) 
                         prior['{0}Voo_m{1}_tw{2}'.format(corr,mass,twist)][1][0] = gv.gvar(Vn) * V10_widener  
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)] = gv.gvar(No * [N * [Vn]])
                         prior['{0}Von_m{1}_tw{2}'.format(corr,mass,twist)][0][0] = gv.gvar(V0) * V10_widener 
