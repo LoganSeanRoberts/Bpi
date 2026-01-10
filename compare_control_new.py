@@ -5,6 +5,7 @@ import numpy as np
 import gvar as gv
 import math
 from matplotlib import pyplot as plt
+from matplotlib.ticker import MaxNLocator
 from comparing.compare_functions import *
 #from comparing.compare_fit_picker import *
 #from fit_choice_catalog_by_mass import *
@@ -12,9 +13,15 @@ from comparing.compare_functions import *
 import collections
 import datetime
 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif"
+})
+
 ### Ensemble Specs
 F = collections.OrderedDict()
 F['tag'] = 'F'
+F['alt_tag'] = 'f5'
 F['avg'] = './comparing/datafile_avg_folder/f5_avg.txt'
 F['masses'] = ['0.450','0.55','0.675','0.8']
 F['twists'] = ['0.0','0.4281','1.282','2.1410','2.570']
@@ -76,6 +83,7 @@ SFp['tmin_3pt'] = 2
 
 UF = collections.OrderedDict()
 UF['tag'] = 'UF'
+UF['alt_tag'] = 'uf5'
 UF['avg'] = './comparing/datafile_avg_folder/uf5_avg.txt'
 UF['masses'] = ['0.194','0.4','0.6','0.8']
 UF['twists'] = ['0.0','0.706','1.529','2.235','4.705']
@@ -632,14 +640,19 @@ def three_point_priors(tw, ci):
     print('Plot successfully saved to /comparing/3pt_prior_plots/{}_{}/{}'.format(ensemble['tag'], s3_tag,filename))
 
 def plot2pt0twE():
-    plt.rcParams["font.family"]= 'sans-serif'
+    plt.rcParams["font.family"]= 'serif'
     ticker = 0
-    plt.figure(figsize=(25, 25))
-    for ens in [F, Fp, SF, SFp, UF]:
+    #plt.figure(figsize=(25, 25))
+    plt.figure(figsize=(6, 6)) #custom plotting for thesis
+    #for ens in [F, Fp, SF, SFp, UF]:
+    for ens in [F, UF]: #custom plotting for thesis
         corr_txt_file = ens['avg']
         tag_array, corr_array = load_Corr_txt(corr_txt_file)
-        for meson in ['pion', 'kaon']:
-            plt.subplot(5,2,ticker+1)
+        #for meson in ['pion', 'kaon']:
+        for meson in ['pion']: #custom plotting for thesis
+            #plt.subplot(5,2,ticker+1)
+            plt.subplot(2,1,ticker+1) #custom plotting for thesis
+            plt.locator_params(axis='x', integer=True)
             plt.xlim(0, ens['tp']/3)
             C2_tag = '2pt_{}G5-G5_th0.0'.format(meson)
             index = list(tag_array).index(C2_tag)
@@ -664,29 +677,35 @@ def plot2pt0twE():
             means, errs = gvar_splitter(M_effs)
             rav_means, rav_errs = gvar_splitter(rav)
             t_space = np.arange(0, ens['tp'], 1)[2:-2]
-            plt.errorbar(t_space, means, yerr=errs, capsize=2, linestyle = '', color = 'blue', label = 'M_eff(t)')
-            plt.plot(t_space[0:-4], rav_means, color = 'green', label = 'R.Avg.')
-            plt.ylim([M_eff.mean-M_eff.mean*0.8,M_eff.mean+M_eff.mean*0.8])
+            plt.errorbar(t_space, means, yerr=errs, capsize=2, fmt = 'o', mfc = 'none', linestyle = '', color = 'blue', label = r'$C_2^\pi$ $aM_{{\mathrm{{eff}}}}(t)$')
+            plt.plot(t_space[0:-4], rav_means, color = 'green', linestyle = '--', label = r'R.Avg$(t)$')
+            plt.ylim([M_eff.mean-M_eff.mean*0.6,M_eff.mean+M_eff.mean*0.6])
+            plt.xlim([ens['tp']/30, ens['tp']/5])
             
-            plt.axhline(M_eff.mean, linestyle = ':', color = 'red', label = 'M_eff(t) of min ΔR.Avg = {}'.format(M_eff))
+            plt.axhline(M_eff.mean, linestyle = ':', color = 'red', label = r'$\Delta_\mathrm{{min}}$ of $\mathrm{{R.Avg}}(t)$')
             plt.axhspan(M_eff.mean - M_eff.mean*0.3, M_eff.mean + M_eff.mean*0.3, color = 'red', alpha = 0.1)
             plt.axhspan(M_eff.mean - M_eff.mean*0.25, M_eff.mean + M_eff.mean*0.25, color = 'red', alpha = 0.1)
             plt.axhspan(M_eff.mean - M_eff.mean*0.2, M_eff.mean + M_eff.mean*0.2, color = 'red', alpha = 0.1)
             plt.axhspan(M_eff.mean - M_eff.mean*0.15, M_eff.mean + M_eff.mean*0.15, color = 'red', alpha = 0.1)
             plt.axhspan(M_eff.mean - M_eff.mean*0.1, M_eff.mean + M_eff.mean*0.1, color = 'red', alpha = 0.1)
-            plt.axhspan(M_eff.mean - M_eff.mean*0.05, M_eff.mean + M_eff.mean*0.05, color = 'red', alpha = 0.1, label = '±5%')
+            plt.axhspan(M_eff.mean - M_eff.mean*0.05, M_eff.mean + M_eff.mean*0.05, color = 'red', alpha = 0.1, label = r'$\Delta_\mathrm{{min}}$ of $\mathrm{{R.Avg}}(t)$ $\pm 5 \%$')
             #plt.scatter(t_slice, A_eff.mean, color = 'green', marker='x')
             
-            plt.xlabel('t/a')
-            plt.ylabel('M_eff(t)')
-            plt.title('{} {} θ=0 Effective Mass'.format(ens['tag'], meson))
+            plt.xlabel(r'$t/a$')
+            plt.ylabel(r'$aM_{{\mathrm{{eff}}}}(t)$')
+            #plt.title('{} ensemble {} effective mass'.format(ens['tag'], meson))
+            plt.title(r'{} ensemble pion $M_{{\mathrm{{eff}}}}(t)$'.format(ens['alt_tag'])) #custom plotting for thesis
             plt.minorticks_on()
-            plt.legend(fontsize='8', frameon=True, loc = 3)
+            plt.legend(frameon=False, loc = 3, ncols = 2)
             #plt.savefig('./comparing/2pt_amps/{}_{}_0tw.pdf'.format(ens['tag'], meson))
             #plt.close()
+            ax = plt.gca()
+            plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+            plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
+            
             ticker +=1
     plt.tight_layout()
-    plt.savefig('./comparing/2pt_amps/AllEs.pdf')
+    plt.savefig('./comparing/2pt_amps/CustomEs.pdf')
     print('Done!')    
 
 
@@ -809,8 +828,8 @@ def function_choice(choice):
         aE_effective_plotting()
     else: print('invalid function choice')
 
-function_choice(function_output_choice)
-#plot2pt0twE()
+#function_choice(function_output_choice)
+plot2pt0twE()
 #plot_2pt0twAmp(Flat_Meff=False)
 
 '''for ens in (F, Fp, SF, SFp, UF):
