@@ -655,7 +655,7 @@ new_main = False
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
-Ensemble_Index = 1
+Ensemble_Index = 4
 Decay_Index = 1
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
@@ -671,7 +671,7 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 #
 PriorLoosener = 1.0
 Nexp = 4  
-FitMasses = [0,1,2,3]                                # Choose which masses to fit
+FitMasses = [0]#,1,2,3]                                # Choose which masses to fit
 FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
 FitTs = [2,3]
 
