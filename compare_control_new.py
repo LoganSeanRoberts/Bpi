@@ -710,15 +710,17 @@ def plot2pt0twE():
 
 
 def plot_2pt0twAmp(Flat_Meff = False):
-    plt.rcParams["font.family"]= 'sans-serif'
+    plt.rcParams["font.family"]= 'serif'
     ticker = 0
-    plt.figure(figsize=(25, 25))
-    for ens in [F, Fp, SF, SFp, UF]:
+    plt.figure(figsize=(6, 6))
+    #for ens in [F, Fp, SF, SFp, UF]:
+    for ens in [F, UF]:
         corr_txt_file = ens['avg']
         tag_array, corr_array = load_Corr_txt(corr_txt_file)
-        for meson in ['pion', 'kaon']:
-            plt.subplot(5,2,ticker+1)
-            plt.xlim(0, ens['tp']/3)
+        #for meson in ['pion', 'kaon']:
+        for meson in ['pion']:
+            plt.subplot(2,1,ticker+1)
+            plt.xlim([ens['tp']/30, ens['tp']/5])
             C2_tag = '2pt_{}G5-G5_th0.0'.format(meson)
             index = list(tag_array).index(C2_tag)
             C2 = corr_array[index]
@@ -761,29 +763,33 @@ def plot_2pt0twAmp(Flat_Meff = False):
             means, errs = gvar_splitter(A_effs)
             rav_means, rav_errs = gvar_splitter(rav)
             t_space = np.arange(0, ens['tp'], 1)#[ens['tmin_meson']:ens['tmax_meson']]
-            plt.errorbar(t_space, means, yerr=errs, capsize=2, linestyle = '', color = 'blue', label = 'A_eff(t)')
-            plt.plot(t_space[0:-4], rav_means, color = 'green', label = 'R.Avg.')
+            plt.errorbar(t_space, means, yerr=errs, capsize=2, fmt = 'o', mfc = 'none', linestyle = '', color = 'blue', label = r'$C_2^\pi$ $A_{{\mathrm{{eff}}}}(t)$')
+            plt.plot(t_space[0:-4], rav_means, color = 'green', linestyle = '--', label = r'R.Avg$(t)$')
             plt.ylim([A_eff.mean-A_eff.mean*0.7,A_eff.mean+A_eff.mean*0.7])
             
-            plt.axhline(A_eff.mean, linestyle = ':', color = 'red', label = 'A_eff(t) of min ΔR.Avg = {}'.format(A_eff))
+            plt.axhline(A_eff.mean, linestyle = ':', color = 'red', label = r'$\Delta_\mathrm{{min}}$ of $\mathrm{{R.Avg}}(t)$')
             plt.axhspan(A_eff.mean - A_eff.mean*0.3, A_eff.mean + A_eff.mean*0.3, color = 'red', alpha = 0.1)
             plt.axhspan(A_eff.mean - A_eff.mean*0.25, A_eff.mean + A_eff.mean*0.25, color = 'red', alpha = 0.1)
             plt.axhspan(A_eff.mean - A_eff.mean*0.2, A_eff.mean + A_eff.mean*0.2, color = 'red', alpha = 0.1)
             plt.axhspan(A_eff.mean - A_eff.mean*0.15, A_eff.mean + A_eff.mean*0.15, color = 'red', alpha = 0.1)
             plt.axhspan(A_eff.mean - A_eff.mean*0.1, A_eff.mean + A_eff.mean*0.1, color = 'red', alpha = 0.1)
-            plt.axhspan(A_eff.mean - A_eff.mean*0.05, A_eff.mean + A_eff.mean*0.05, color = 'red', alpha = 0.1, label = '±5%')
+            plt.axhspan(A_eff.mean - A_eff.mean*0.05, A_eff.mean + A_eff.mean*0.05, color = 'red', alpha = 0.1, label = r'$\Delta_\mathrm{{min}}$ of $\mathrm{{R.Avg}}(t)$ $\pm 5 \%$')
             #plt.scatter(t_slice, A_eff.mean, color = 'green', marker='x')
             
-            plt.xlabel('t/a')
-            plt.ylabel('A_eff(t)')
-            plt.title('{} {} θ=0 Effective Amplitude'.format(ens['tag'], meson))
+            plt.xlabel(r'$t/a$')
+            plt.ylabel(r'$A_{{\mathrm{{eff}}}}(t)$')
+            #plt.title('{} ensemble {} effective mass'.format(ens['tag'], meson))
+            plt.title(r'{} ensemble pion $A_{{\mathrm{{eff}}}}(t)$'.format(ens['alt_tag']))
             plt.minorticks_on()
-            plt.legend(fontsize='8', frameon=True, loc = 3)
+            plt.legend(frameon=False, loc = 3, ncols = 2)
             #plt.savefig('./comparing/2pt_amps/{}_{}_0tw.pdf'.format(ens['tag'], meson))
             #plt.close()
+            ax = plt.gca()
+            plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+            plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
             ticker +=1
     plt.tight_layout()
-    plt.savefig('./comparing/2pt_amps/AllAmps_Flat_Meff={}.pdf'.format(Flat_Meff))
+    plt.savefig('./comparing/2pt_amps/CustomAmps_Flat_Meff={}.pdf'.format(Flat_Meff))
     print('Done!')
 
 def get_all_2pt_amps():
@@ -829,8 +835,8 @@ def function_choice(choice):
     else: print('invalid function choice')
 
 #function_choice(function_output_choice)
-plot2pt0twE()
-#plot_2pt0twAmp(Flat_Meff=False)
+#plot2pt0twE()
+plot_2pt0twAmp(Flat_Meff=False)
 
 '''for ens in (F, Fp, SF, SFp, UF):
     #corr_txt_file = ens['avg']
