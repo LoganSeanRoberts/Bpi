@@ -34,6 +34,7 @@ F['a'] = 0.1715/(1.9006*0.1973)
 F['tmin_meson'] = 4
 F['tmax_meson'] = 48
 F['tmin_3pt'] = 2
+F['fm'] = 0.09
 
 Fp = collections.OrderedDict()
 Fp['tag'] = 'Fp'
@@ -79,6 +80,7 @@ SFp['a'] = 0.1715/(3.0170*0.1973) #from 2207.04765
 SFp['tmin_meson'] = 7
 SFp['tmax_meson'] = 72
 SFp['tmin_3pt'] = 2
+SFp['alt_tag'] = 'sfphys'
 
 
 UF = collections.OrderedDict()
@@ -96,20 +98,21 @@ UF['a'] = 0.1715/(3.892*0.1973)
 UF['tmin_meson'] = 7
 UF['tmin_3pt'] = 2
 UF['tmax_meson'] = 96
+UF['fm'] = 0.044
 
 
 #####################################################################
 ###################### Control Panel ################################
 #####################################################################
                                                                     #
-ensemble = F #Fp, SF, SFp, UF                                       #
+ensemble = UF #Fp, SF, SFp, UF                                       #
 strange = False  #if False -> B to pi, if True -> Bs to K             #
 mass_choice = 2 #[0,1,2,3]                                          #    
 twist_choice = 0 #[0,1,2,3,4]              
 #ci = 0 #current choice -> Scalar, TVec, XVec, Tensor                         #
 width_choice = 3 #[0,1,2,3]                                         #
 Nexp = 4          
-function_output_choice = 2  #0 = compare, 1 = twopt meffs, 2 = 3pt prior, 3 = 2pt amps , 4 = aEeff plots
+function_output_choice = 4  #0 = compare, 1 = twopt meffs, 2 = 3pt prior, 3 = 2pt amps , 4 = aEeff plots
                                                                     #
 #####################################################################
 #####################################################################
@@ -450,7 +453,8 @@ def aE_effective_plotting(ens, strange):
     Nt = ens['tp']
     t_space = np.arange(0, Nt, 1)
     colors = ['red', 'blue', 'green', 'purple', 'tab:orange', 'tab:cyan']
-    plt.figure(figsize = (10,5))
+    markers = ['o', '^', 's', 'p', 'h']
+    plt.figure(figsize = (6,3.5))
     tag_array, corr_array = load_Corr_txt(corr_txt_file)
     tw = 0
     for twist in ens['twists']:
@@ -464,17 +468,28 @@ def aE_effective_plotting(ens, strange):
             else: end = i+1
             avg = (aE_eff_daughter_means[i-1] + aE_eff_daughter_means[i] + aE_eff_daughter_means[end])/3
             roll_avg.append(avg)
-        plt.errorbar(t_space, aE_eff_daughter_means, yerr= aE_eff_daughter_errs, capsize=2, linestyle = '', label = 'aE_eff tw{}'.format(twist), color = colors[tw])
-        plt.plot(t_space, roll_avg, linestyle = ':', color = colors[tw])
+        plt.errorbar(t_space, aE_eff_daughter_means, yerr= aE_eff_daughter_errs, capsize=4, fmt = markers[tw], mfc = 'none', linestyle = '', label = r'$C_2^\pi aE_\mathrm{{eff}}(t)$ $\theta={}$'.format(twist), color = colors[tw])
+        #plt.plot(t_space, roll_avg, linestyle = ':', color = colors[tw])
         tw +=1
     plt.ylim([0,1])
-    plt.yticks(np.linspace(0,1,21))
-    plt.grid(visible=True, axis= 'y', which= 'both')
-    plt.xlim([ens['tmin_meson'],Nt/3])
-    plt.title('{} Effective Energy {}-ensmble '.format(s3_tag, ens['tag']))
-    plt.legend(loc = 1)
-    plt.savefig('./comparing/aEeff_plots/aE_{}_{}.pdf'.format(ens['tag'],s3_tag), format = 'pdf')
-    print('Saved to ./comparing/aEeff_plots/aE_{}_{}.pdf'.format(ens['tag'],s3_tag))
+    #plt.yticks(np.linspace(0,1,21))
+    #plt.grid(visible=True, axis= 'y', which= 'both')
+    plt.ylim([0,1]) #custom changes
+    plt.xlim([ens['tmin_meson']+0.5,Nt/9]) #custom changes
+    #plt.title(r'{1} ensmble {0} $aE_\mathrm{{eff}}$'.format(daughter, ens['alt_tag']))
+    plt.title(r'{1} ensmble {0} effective energies, $a=0.044$ fm'.format(daughter, ens['alt_tag']))
+    plt.minorticks_on()
+    plt.legend(frameon=False, loc = 2, ncols = 2)
+    #plt.savefig('./comparing/2pt_amps/{}_{}_0tw.pdf'.format(ens['tag'], meson))
+    #plt.close()
+    ax = plt.gca()
+    plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+    plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
+    plt.xlabel(r'$t/a$')
+    plt.ylabel(r'$aE_\mathrm{{eff}}$')
+    plt.tight_layout()
+    plt.savefig('./comparing/aEeff_plots/aE_{}_{}.pdf'.format(ens['alt_tag'],s3_tag), format = 'pdf')
+    print('Saved to ./comparing/aEeff_plots/aE_{}_{}.pdf'.format(ens['alt_tag'],s3_tag))
 ################################################################################################################################
 
 
@@ -595,11 +610,12 @@ def two_point_priors():
     print('Plot successfully saved to /comparing/3pt_prior_plots/{}'.format(filename))'''
 
 def three_point_priors(tw, ci):
-    plt.figure(figsize=(10, 7))
+    plt.figure(figsize=(8.5,4))
     plt.rcParams.update({'font.size': 14})
     tag_array, corr_array = load_Corr_txt(corr_txt_file)
     ticker, colors = 0, ['red','blue', 'green', 'purple']
-    twist_tick = -0.25
+    markers = ['o', '^', 's', 'p', 'h']
+    twist_tick = -0.21
     for mass in ensemble['masses']:
         for twist in ensemble['twists']:
             tag_mother, corr_mother, tag_daughter, corr_daughter = Corr2pt_picker(strange, mass, twist, tag_array, corr_array)
@@ -613,31 +629,38 @@ def three_point_priors(tw, ci):
                 J_effs.append(J_eff_mean)
                 J_errs.append(J_err)
             if twist == ensemble['twists'][tw]:
-                plt.errorbar(t_space+twist_tick, J_effs[ci], yerr=J_errs[ci], capsize=4, linestyle = '', color = colors[ticker], marker = 'x',label = 'amₕ={}'.format(mass))
+                plt.errorbar(t_space+twist_tick, J_effs[ci], yerr=J_errs[ci], capsize=1.5, mfc = 'none', linestyle = '', color = colors[ticker], marker = markers[ticker] ,label = r'$am_b={}$'.format(mass))
                 #
                 ravg = [] #plotting ravg of Veff
                 for i in range(len(J_effs[ci][1:-3])):
                     ravg.append((J_effs[ci][i-1] + J_effs[ci][i] + J_effs[ci][i+1] + J_effs[ci][i+2])/4)
                 #print(ravg)
-                plt.plot(t_space[1:-3]+twist_tick, ravg, color = colors[ticker], linestyle = ':')
+                #plt.plot(t_space[1:-3]+twist_tick, ravg, color = colors[ticker], linestyle = ':')
             if ci > 1: 
                 plt.ylim([-0.1,1.0])
-                plt.yticks(np.linspace(-.1, 1.0, 23))
+                #plt.yticks(np.linspace(-.1, 1.0, 23))
             else: 
-                plt.ylim([-0.25,6])
-                plt.yticks(np.linspace(-.25, 6.0, 26))
-            plt.xlim([ensemble['tmin_3pt']+5,width+0.5])
-            plt.xlabel('t/a')
-            plt.ylabel('Effective Amplitude')
-            plt.grid(visible=True, axis= 'y', which= 'both')
-            plt.axvline(x=tmin_3pt, color = 'black', linestyle = '--')
-            plt.title('{} {} {} Veff, θ = {}'.format(ensemble['tag'], s3_tag, currs[ci],ensemble['twists'][tw]))
-            plt.legend()
-        twist_tick+=0.125
+                plt.ylim([-0.5,6])
+                #plt.yticks(np.linspace(-.25, 6.0, 26))
+            #plt.xlim([ensemble['tmin_3pt']+5,width+0.5])
+            plt.xlim([9.5,width+0.5])
+            plt.xlabel(r'$t/a$')
+            plt.ylabel(r'$S_\mathrm{{eff}}(t,T=44)$')
+            #plt.grid(visible=True, axis= 'y', which= 'both')
+            #plt.axvline(x=tmin_3pt, color = 'black', linestyle = '--')
+            plt.title(r'{0} ensemble $H\rightarrow\pi$ S-current effective amplitudes, $a = {1}$ fm,  $\theta = {3}$'.format(ensemble['alt_tag'], ensemble['fm'], currs[ci],ensemble['twists'][tw], width))
+            plt.legend(frameon=False, loc = 3, ncols = 2)
+            plt.minorticks_on()
+            ax = plt.gca()
+            plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+            plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
+        twist_tick+=0.14
         ticker += 1
     filename = '{}_{}_Vamps_{}_{}.pdf'.format(ensemble['tag'], s3_tag, currs[ci], tw) #,datetime.datetime.now())
-    plt.savefig('./comparing/3pt_prior_plots/{}_{}/{}'.format(ensemble['tag'], s3_tag, filename), format = 'pdf')
-    print('Plot successfully saved to /comparing/3pt_prior_plots/{}_{}/{}'.format(ensemble['tag'], s3_tag,filename))
+    #plt.savefig('./comparing/3pt_prior_plots/{}_{}/{}'.format(ensemble['tag'], s3_tag, filename), format = 'pdf')
+    plt.tight_layout()
+    plt.savefig('./comparing/custom/{}.pdf'.format(tw), format = 'pdf') #custom 3pt plots for thesis
+    print('Plot successfully saved to /comparing/custom/{}.pdf'.format(tw))
 
 def plot2pt0twE():
     plt.rcParams["font.family"]= 'serif'
@@ -692,9 +715,9 @@ def plot2pt0twE():
             #plt.scatter(t_slice, A_eff.mean, color = 'green', marker='x')
             
             plt.xlabel(r'$t/a$')
-            plt.ylabel(r'$aM_{{\mathrm{{eff}}}}(t)$')
+            plt.ylabel(r'$aM_{{\mathrm{{eff}}}}$')
             #plt.title('{} ensemble {} effective mass'.format(ens['tag'], meson))
-            plt.title(r'{} ensemble pion $M_{{\mathrm{{eff}}}}(t)$'.format(ens['alt_tag'])) #custom plotting for thesis
+            plt.title(r'{0} ensemble pion effective mass, $a = {1}$ fm'.format(ens['alt_tag'], ens['fm'])) #custom plotting for thesis
             plt.minorticks_on()
             plt.legend(frameon=False, loc = 3, ncols = 2)
             #plt.savefig('./comparing/2pt_amps/{}_{}_0tw.pdf'.format(ens['tag'], meson))
@@ -777,9 +800,9 @@ def plot_2pt0twAmp(Flat_Meff = False):
             #plt.scatter(t_slice, A_eff.mean, color = 'green', marker='x')
             
             plt.xlabel(r'$t/a$')
-            plt.ylabel(r'$A_{{\mathrm{{eff}}}}(t)$')
+            plt.ylabel(r'$A_{{\mathrm{{eff}}}}$')
             #plt.title('{} ensemble {} effective mass'.format(ens['tag'], meson))
-            plt.title(r'{} ensemble pion $A_{{\mathrm{{eff}}}}(t)$'.format(ens['alt_tag']))
+            plt.title(r'{0} ensemble pion effective amplitude, $a = {1}$ fm, $\vec{{p}} = 0.0$'.format(ens['alt_tag'], ens['fm']))
             plt.minorticks_on()
             plt.legend(frameon=False, loc = 3, ncols = 2)
             #plt.savefig('./comparing/2pt_amps/{}_{}_0tw.pdf'.format(ens['tag'], meson))
@@ -836,7 +859,7 @@ def function_choice(choice):
 
 #function_choice(function_output_choice)
 #plot2pt0twE()
-plot_2pt0twAmp(Flat_Meff=False)
+#plot_2pt0twAmp(Flat_Meff=False)
 
 '''for ens in (F, Fp, SF, SFp, UF):
     #corr_txt_file = ens['avg']
@@ -844,8 +867,11 @@ plot_2pt0twAmp(Flat_Meff=False)
     aE_effective_plotting(ens, strange)
     strange = True
     aE_effective_plotting(ens, strange)'''
+#aE_effective_plotting(ens, strange)
 
-
+ci=0
+for tw in range(len(ensemble['twists'])):
+    three_point_priors(tw, ci)
 
 
 
