@@ -65,7 +65,7 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
         UF_fits['Hpi'] = d + 'UF_Hpi_2025-11-23 02:38:54.064933.pickle'
         UF_fits['HsK'] = d + 'UF_HsK_2025-11-26 17:01:39.677199.pickle'
 
-    chi2_scaling = False
+    chi2_scaling = True
     if chi2_scaling == True:
         F_fits['Hpi'] = d + 'F_Hpi_2025-12-03 17:46:58.004450.pickle'
         F_fits['HsK'] = d + 'F_HsK_2025-12-04 10:02:16.226320.pickle'

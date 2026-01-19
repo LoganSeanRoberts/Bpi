@@ -33,7 +33,7 @@ from dispersion.dispersion_functions import*
 #mass_choice = 1 ### 0 mass is being funy, not working, missing correlators?
 #Strange = False
 #Do_All_Ensembles = True
-keyword = 'Post-wavgchi2-change'
+keyword = 'custom'
 
 ### Automatic #########
 '''
@@ -62,7 +62,7 @@ if Do_All_Ensembles == False:
     plot_Discetization_Bounds()
     plt.savefig('./dispersion/{}.png'.format('Amp_dispersion_plot'),format = 'png')
 '''
-ticker = 0
+'''ticker = 0
 plt.figure(figsize=(16,12))
 plt.tight_layout()
 colors = ['red', 'blue', 'green', 'purple', 'tab:orange', 'tab:cyan']
@@ -86,8 +86,8 @@ for decay_str in ['Hpi', 'HsK']:
         ensemble_E_table = get_E_daughter_table(decay_str, twist_list, fit_choice, i, ens)
 
         table = table + ensemble_E_table + [[]*6]
-        if ticker == 1: plt.ylim([0.95,1.15])
-        elif ticker == 3: plt.ylim([0.95, 1.1])
+        #if ticker == 1: plt.ylim([0.95,1.15])
+        #elif ticker == 3: plt.ylim([0.95, 1.1])
     #plt.title('{} Energy dispersion relations, am = {}'.format(decay, m_string))
     print(tabulate(table, headers= headers))
     plt.title('{} Energy dispersion relations'.format(decay_str))
@@ -118,4 +118,30 @@ for decay_str in ['Hpi', 'HsK']:
     #plt.savefig('./dispersion/dispersion_plots/{}_Amp_dispersion.pdf'.format(decay_str),format = 'pdf')
 #plt.suptitle('{} Dispersion Plots'.format(keyword))
 #plt.subplots_adjust(top=0.93)
-plt.savefig('./dispersion/dispersion_plots/'+keyword+'_dispersion_plots.pdf',format = 'pdf')
+#plt.savefig('./dispersion/dispersion_plots/'+keyword+'_dispersion_plots.pdf',format = 'pdf')'''
+
+def do_Es_only(decay_str, ylim_list):
+    plt.figure(figsize=(8,6))
+    plt.tight_layout()
+    colors = ['red', 'blue', 'green', 'purple', 'tab:orange', 'tab:cyan']
+    markers = ['o', '^', 's', 'p', 'h']
+    plt.tight_layout()
+    ### Energy
+    plot_Discetization_Bounds()
+    for i in range(5): 
+        ens, m_string = index_to_Fit(i, 0)
+        print('Loading in {} {} fit...'.format(decay_str, ens))
+        fit_choice = gv.load(fit_Pick_by_Decay_Channel(ens, decay_str))
+        print('{} {} fit loaded.'.format(decay_str, ens))
+        twist_list = index_to_Twist(i)
+        N_x = index_to_Nx(i)
+
+        x_vals, y_vals, eps2= get_E_Dispersion_Vars(decay_str, twist_list, fit_choice, i, N_x)
+        plot_E_Dispersion_Relation(x_vals, y_vals, eps2, ens, colors[i], markers[i], decay_str)
+        #plt.title('{} Energy dispersion relations'.format(decay_str))
+    plt.ylim(ylim_list)
+    plt.legend(frameon=False, loc = 2, ncols = 2)
+    plt.savefig('./dispersion/dispersion_plots/'+keyword+decay_str+'_Edisp_plots.pdf',format = 'pdf')
+
+do_Es_only('Hpi', [0.9,1.2])
+do_Es_only('HsK', [0.95,1.10])
