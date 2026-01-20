@@ -9,6 +9,7 @@ from tabulate import tabulate
 
 def index_to_Fit(i,j):
     ensembles = ['F', 'Fp', 'SF', 'SFp', 'UF']
+    alt_ens = ['f5', 'fphys', 'sf5', 'sfphys', 'uf5']
     masses = [
         ['0.450','0.55','0.675','0.8'],
         ['0.433','0.555','0.678','0.8'],
@@ -16,7 +17,7 @@ def index_to_Fit(i,j):
         ['0.2585','0.5','0.65','0.8'],
         ['0.194','0.4','0.6','0.8']
     ]
-    return ensembles[i],masses[i][j]
+    return ensembles[i],masses[i][j], alt_ens[i]
 
 def index_to_Twist(i):
     twists = [
@@ -41,7 +42,6 @@ def full_Adispersion_relation(aM_daughter, aE_daughter, aAmp_tw0):
     return aAmp
 
 
-
 def calc_Daughter_3Momentum(twist, i): #twist, lattice length in lattice units. 
     N_xes = [32, 64, 48, 96, 64]
     N_x = N_xes[i]
@@ -61,8 +61,8 @@ def get_E_Dispersion_Vars(decay_str, twist_list, g, ensemble_choice, N_x):
     for twist in twist_list[1:]:
         ap_daughter = calc_Daughter_3Momentum(twist, ensemble_choice)
         E_daughter = gv.exp(g['log(dE:2pt_'+daughter_choice+'G5-G5_th'+twist+')'][0])
-        y_val = (E_daughter**2 - m_daughter**2) / gv.abs(ap_daughter)**2
-        #y_val = E_daughter / full_Edispersion_relation(m_daughter, twist, N_x)
+        #y_val = (E_daughter**2 - m_daughter**2) / gv.abs(ap_daughter)**2
+        y_val = E_daughter / full_Edispersion_relation(m_daughter, twist, N_x)
         y_vals.append(y_val)
         x_vals.append(gv.abs(ap_daughter)**2)
     eps2 = g['{}'.format(eps)]
@@ -126,6 +126,7 @@ def get_Amp_Dispersion_Vars(decay_str, twist_list, g, ensemble_choice, N_x):  ##
         thx_amp_daughter = gv.exp(g['log(2pt_' +daughter_choice+ 'G5-G5_th'+twist+':a)'][0]) 
         E_daughter = full_Edispersion_relation(m_daughter, twist, N_x)
         y_val = thx_amp_daughter / full_Adispersion_relation(m_daughter, E_daughter, th0_amp_daughter)
+        #y_val = ((th0_amp_daughter**4 / thx_amp_daughter**4  -1) * m_daughter**2)/gv.abs(ap_daughter)**2
         y_vals.append(y_val)
         x_vals.append(gv.abs(ap_daughter)**2)
     A2 = g['{}'.format(A)]
@@ -172,28 +173,16 @@ def plot_Discetization_Bounds():
     plt.axhline(y = 1, color = 'black', linestyle = '--')
     plt.xlim([-0.02,0.35])
 
-def plot_E_Dispersion_Relation(x_vals, y_vals, eps2, ensemble, color, marker, decay_str):
-    if decay_str == 'Hpi': alt_str = '\pi'
-    elif decay_str == 'HsK': alt_str = 'K'
+def plot_E_Dispersion_Relation(x_vals, y_vals, eps2, ensemble, color, marker, alt_ens):
     y_means, y_errs = gvar_splitter(y_vals)
     #plt.scatter(x_vals, y_means, marker='o', edgecolors= color, facecolors='none', label = '{}'.format(ensemble, eps2))
-    plt.errorbar(x_vals, y_means, yerr=2*np.array(y_errs), linestyle = '', color = color, mfc='none', capsize=3, marker = 'none', alpha = 0.4)
-    plt.errorbar(x_vals, y_means, yerr=y_errs, linestyle = '', color = color, mfc='none', capsize=3, ms=10, marker = marker, label = '{}'.format(ensemble, eps2))
-    plt.xlabel(r'$|ap_{0}|^2$'.format(alt_str))
-    plt.ylabel(r'$(E^2_{0} - M^2_{0})/p^2_{0}$'.format(alt_str))
-    #plt.ylabel('E²/(M² + p²)')
-    #plt.ylabel('E/func(p)')
-    plt.minorticks_on()
+    plt.errorbar(x_vals, y_means, yerr=2*np.array(y_errs), linestyle = '', color = color, mfc='none', capsize=5, marker = 'none', alpha = 0.4)
+    plt.errorbar(x_vals, y_means, yerr=y_errs, linestyle = '', color = color, mfc='none', capsize=5, ms=10, marker = marker, label = '{}'.format(alt_ens))
+    
 
-def plot_Amp_Dispersion_Relation(x_vals, y_vals, A2, ensemble, color, marker):
+def plot_Amp_Dispersion_Relation(x_vals, y_vals, A2, ensemble, color, marker, alt_ens):
     y_means, y_errs = gvar_splitter(y_vals)
     #plt.scatter(x_vals, y_means, marker='o', edgecolors= color, facecolors='none', label = '{}'.format(ensemble, A2))
-    plt.errorbar(x_vals, y_means, yerr=2*np.array(y_errs), linestyle = '', color = color, mfc='white', capsize=3, marker = marker, alpha = 0.3)
-    plt.errorbar(x_vals, y_means, yerr=y_errs, linestyle = '', color = color, mfc='white', capsize=3, marker = marker, label = '{}'.format(ensemble, A2))
-    plt.errorbar(x_vals, y_means, yerr=y_errs, linestyle = '', color = color, capsize=3)
-    plt.axhline(y = 1, color = 'black')#, linestyle = '--')
-    plt.xlabel(r'$|ap|^2$')
-    plt.ylabel('A/func(p)')
-    #plt.ylabel('Aₚ/A₀ * ∜[1 + p²/M²]')
-    plt.minorticks_on()
-
+    plt.errorbar(x_vals, y_means, yerr=2*np.array(y_errs), linestyle = '', color = color, mfc='none', capsize=5, marker = 'none', alpha = 0.4)
+    plt.errorbar(x_vals, y_means, yerr=y_errs, linestyle = '', color = color, mfc='none', capsize=5, ms=10, marker = marker, label = '{}'.format(alt_ens))
+    

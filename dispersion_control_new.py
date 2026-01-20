@@ -13,10 +13,10 @@ import collections
 from tabulate import tabulate
 
 plt.rc("font",**{"size":14})
-# plt.rcParams.update({
-#     "text.usetex": True,
-#     "font.family": "serif"
-# })
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif"
+})
 
 ### Custom files directory changes may have occured
 from fit_choice_catalog_by_decay_channel import *
@@ -121,15 +121,16 @@ for decay_str in ['Hpi', 'HsK']:
 #plt.savefig('./dispersion/dispersion_plots/'+keyword+'_dispersion_plots.pdf',format = 'pdf')'''
 
 def do_Es_only(decay_str, ylim_list):
+    if decay_str == 'Hpi': alt_str = '\pi'
+    elif decay_str == 'HsK': alt_str = 'K'
     plt.figure(figsize=(8,6))
     plt.tight_layout()
     colors = ['red', 'blue', 'green', 'purple', 'tab:orange', 'tab:cyan']
     markers = ['o', '^', 's', 'p', 'h']
-    plt.tight_layout()
     ### Energy
     plot_Discetization_Bounds()
     for i in range(5): 
-        ens, m_string = index_to_Fit(i, 0)
+        ens, m_string, alt_ens = index_to_Fit(i, 0)
         print('Loading in {} {} fit...'.format(decay_str, ens))
         fit_choice = gv.load(fit_Pick_by_Decay_Channel(ens, decay_str))
         print('{} {} fit loaded.'.format(decay_str, ens))
@@ -137,11 +138,51 @@ def do_Es_only(decay_str, ylim_list):
         N_x = index_to_Nx(i)
 
         x_vals, y_vals, eps2= get_E_Dispersion_Vars(decay_str, twist_list, fit_choice, i, N_x)
-        plot_E_Dispersion_Relation(x_vals, y_vals, eps2, ens, colors[i], markers[i], decay_str)
-        #plt.title('{} Energy dispersion relations'.format(decay_str))
+        plot_E_Dispersion_Relation(x_vals, y_vals, eps2, ens, colors[i], markers[i], alt_ens)
+    plt.xlabel(r'$|ap_{0}|^2$'.format(alt_str))
+    #plt.ylabel(r'$(E^2_{0} - M^2_{0})/p^2_{0}$'.format(alt_str))
+    plt.ylabel(r'$E_{0}/f(M_{0}, p_{0})$'.format(alt_str))
+    plt.minorticks_on()
+    ax = plt.gca()
+    plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+    plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
     plt.ylim(ylim_list)
     plt.legend(frameon=False, loc = 2, ncols = 2)
     plt.savefig('./dispersion/dispersion_plots/'+keyword+decay_str+'_Edisp_plots.pdf',format = 'pdf')
 
-do_Es_only('Hpi', [0.9,1.2])
-do_Es_only('HsK', [0.95,1.10])
+def do_Amps_only(decay_str, ylim_list):
+    if decay_str == 'Hpi': alt_str = '\pi'
+    elif decay_str == 'HsK': alt_str = 'K'
+    plt.figure(figsize=(8,6))
+    plt.tight_layout()
+    colors = ['red', 'blue', 'green', 'purple', 'tab:orange', 'tab:cyan']
+    markers = ['o', '^', 's', 'p', 'h']
+    ### Energy
+    plot_Discetization_Bounds()
+    for i in range(5): 
+        ens, m_string, alt_ens = index_to_Fit(i, 0)
+        print('Loading in {} {} fit...'.format(decay_str, ens))
+        fit_choice = gv.load(fit_Pick_by_Decay_Channel(ens, decay_str))
+        print('{} {} fit loaded.'.format(decay_str, ens))
+        twist_list = index_to_Twist(i)
+        N_x = index_to_Nx(i)
+
+        x_vals, y_vals, A2 = get_Amp_Dispersion_Vars(decay_str, twist_list, fit_choice, i, N_x)
+        plot_Amp_Dispersion_Relation(x_vals, y_vals, A2, ens, colors[i], markers[i], alt_ens)
+        #plt.title('{} Energy dispersion relations'.format(decay_str))
+    plt.xlabel(r'$|ap_{0}|^2$'.format(alt_str))
+    plt.ylabel(r'$A_{0}/f(A_0, M_{0}, p_{0})$'.format(alt_str))
+    #plt.ylabel(r'$A_{{\vec{{p}}}}/(A_{{\vec{{0}}}}\sqrt{{M^2_{0}+p^2_{0}}})$'.format(alt_str))
+    plt.minorticks_on()
+    ax = plt.gca()
+    plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+    plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
+    plt.ylim(ylim_list)
+    plt.legend(frameon=False, loc = 2, ncols = 2)
+    plt.savefig('./dispersion/dispersion_plots/'+keyword+decay_str+'_Ampdisp_plots.pdf',format = 'pdf')
+
+
+#do_Es_only('Hpi', [0.94,1.20])
+#do_Es_only('HsK', [0.95,1.10])
+do_Amps_only('Hpi', [0.8, 1.25])
+do_Amps_only('HsK', [0.65, 1.24])
