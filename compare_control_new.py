@@ -174,6 +174,7 @@ def simple_logcorr_plotting(s3_tag, ens, pnt):
             plt.scatter(T_space, log_corrs[0:Tint], label = T)
             #print(tags_3pt[0])
     
+    
     plt.ylabel('log(correlator)')
     plt.xlabel('t/a')
     ax = plt.gca()
