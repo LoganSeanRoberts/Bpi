@@ -13,10 +13,10 @@ from comparing.compare_functions import *
 import collections
 import datetime
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif"
-})
+# plt.rcParams.update({
+#     "text.usetex": True,
+#     #"font.family": "serif"
+# })
 
 ### Ensemble Specs
 F = collections.OrderedDict()
@@ -105,10 +105,10 @@ UF['fm'] = 0.044
 ###################### Control Panel ################################
 #####################################################################
                                                                     #
-ensemble = UF #Fp, SF, SFp, UF                                       #
+ensemble = F #Fp, SF, SFp, UF                                       #
 strange = False  #if False -> B to pi, if True -> Bs to K             #
-mass_choice = 2 #[0,1,2,3]                                          #    
-twist_choice = 0 #[0,1,2,3,4]              
+mass_choice = 3 #[0,1,2,3]                                          #    
+twist_choice = 4 #[0,1,2,3,4]              
 #ci = 0 #current choice -> Scalar, TVec, XVec, Tensor                         #
 width_choice = 3 #[0,1,2,3]                                         #
 Nexp = 4          
@@ -141,6 +141,48 @@ else: spectator, daughter, s_tag, s3_tag = 'l', 'pion', 'false', 'Hpi'
 #loaded_PKL_file = gv.load(fit_Pick(ensemble['tag'],mass))
 #g_real = gv.load(fit_Pick_by_Current_Type(ensemble['tag'], 'real'))
 #g_imaginary = gv.load(fit_Pick_by_Current_Type(ensemble['tag'], 'imaginary'))
+def simple_logcorr_plotting(s3_tag, ens, pnt):
+    # Loading in gpl to read correlator and calc masses and amps
+    plt.figure(figsize=(4.5,3.5))
+    tag_array, corr_array = load_Corr_txt(corr_txt_file)
+    if pnt == 2:
+        print('Loading in corr_txt_file')
+        tag_mother, corr_mother, tag_daughter, corr_daughter = Corr2pt_picker(strange, mass, twist, tag_array, corr_array)
+        #splitting for plotting
+        corr_mother_means, corr_mother_errs = gvar_splitter(corr_mother)
+        corr_daughter_means, corr_daughter_errs = gvar_splitter(corr_daughter)
+        log_heavy = np.log(np.array(corr_mother_means))
+        log_light = np.log(np.array(corr_daughter_means))
+        
+        Nt2 = int(Nt/2)
+        print(tag_mother, tag_daughter)
+        plt.figure(figsize=(4.5,3.5))
+        plt.scatter(t_space[0:Nt2], log_heavy[0:Nt2], label = 'Heavy', color = 'red', s = 13)
+        plt.scatter(t_space[0:Nt2], log_light[0:Nt2], label = 'Light', color = 'blue', s = 13 )
+
+        #plt.ylabel(r'log$(C_2)$')
+        #plt.xlabel(r'$t/a$')
+        plt.xlim([-2, Nt2 + 2])
+
+    elif pnt == 3:
+        for T in ensemble['Ts']:
+            tags_3pt, corrs_3pt = Corr3pt_picker(strange, mass, twist, T, tag_array, corr_array)
+            corr_means, corr_errs = gvar_splitter(corrs_3pt[0])
+            log_corrs = np.log(np.array(corr_means))
+            Tint = int(T)
+            T_space = np.linspace(0,Tint,Tint)
+            plt.scatter(T_space, log_corrs[0:Tint], label = T)
+            #print(tags_3pt[0])
+    
+    plt.ylabel('log(correlator)')
+    plt.xlabel('t/a')
+    ax = plt.gca()
+    plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+    plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
+    plt.legend(frameon=False,)
+    print('Plotting complete.')
+    plt.savefig('./comparing/log_plots/custom.pdf', format = 'pdf')
+
 
 '''def compare_plots():
     # Reconstructing 2pt correlator, masses, and amps
@@ -663,7 +705,7 @@ def three_point_priors(tw, ci):
     print('Plot successfully saved to /comparing/custom/{}.pdf'.format(tw))
 
 def plot2pt0twE():
-    plt.rcParams["font.family"]= 'serif'
+    #plt.rcParams["font.family"]= 'serif'
     ticker = 0
     #plt.figure(figsize=(25, 25))
     plt.figure(figsize=(6, 6)) #custom plotting for thesis
@@ -733,7 +775,7 @@ def plot2pt0twE():
 
 
 def plot_2pt0twAmp(Flat_Meff = False):
-    plt.rcParams["font.family"]= 'serif'
+    #plt.rcParams["font.family"]= 'serif'
     ticker = 0
     plt.figure(figsize=(6, 6))
     #for ens in [F, Fp, SF, SFp, UF]:
@@ -869,9 +911,11 @@ def function_choice(choice):
     aE_effective_plotting(ens, strange)'''
 #aE_effective_plotting(ens, strange)
 
-ci=0
-for tw in range(len(ensemble['twists'])):
-    three_point_priors(tw, ci)
+# ci=0
+# for tw in range(len(ensemble['twists'])):
+#     three_point_priors(tw, ci)
 
 
+
+simple_logcorr_plotting(s3_tag, ens, 3)
 
