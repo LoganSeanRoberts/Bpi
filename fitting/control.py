@@ -655,8 +655,8 @@ new_main = False
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
-Ensemble_Index = 4
-Decay_Index = 1
+Ensemble_Index = 0
+Decay_Index = 0
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
 #
@@ -672,8 +672,8 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 PriorLoosener = 1.0
 Nexp = 4  
 FitMasses = [0]#,1,2,3]                                # Choose which masses to fit
-FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
-FitTs = [2,3]
+FitTwists = [0,1]                           # Choose which twists to fit
+FitTs = [3]
 
 # Global fit by decay channel options
 fit_by_decay_channel_method = False
@@ -713,14 +713,15 @@ Only_2pts = True
 if Only_2pts == True:
     B = ['B5','B5T','B5X','BYZ']
     Bs = ['Bs5','Bs5T','Bs5X','BsYZ']
+    curr = ['S', 'V', 'X', 'T']
     #FitCorrs = np.array([B + Bs + ['pi', 'K']] ,dtype=object)
-    if Decay_Index == 0: FitCorrs = np.array([B + ['pi']] ,dtype=object)  
+    if Decay_Index == 0: FitCorrs = np.array([B + ['pi'] + curr] ,dtype=object)  
     #if Decay_Index == 0: FitCorrs = np.array([['B5'] + ['pi'] + ['S']] ,dtype=object)  
     elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K']],dtype=object) 
     #else: print('Invalid Decay Index, must be 0 or 1, you have chosen {}'.format(Decay_Index))
 
 
-SaveFit = False
+SaveFit = True
 Append_Key_Fit_Stats = False       #Appends csv file 'Key_Fit_Stats.csv', only funcitonal if Savefit = True. mostly used for svd testing
 noise = False
 SepMass = False                                 #defunct funcitonality, keep false
@@ -804,10 +805,10 @@ def main():
 #####################################################################################################
 def alt_main():
     #prereqs
-    Re_Bpi = ['B5','B5T', 'pi', 'S', 'V']
-    Im_Bpi = ['B5X','BYZ', 'pi', 'X', 'T']
-    Re_BsK = ['Bs5','Bs5T', 'K', 'Ss', 'Vs']
-    Im_BsK = ['Bs5X','BsYZ', 'K', 'Xs', 'Ts']
+    Re_Bpi = ['B5','B5T','B5X','BYZ', 'pi', 'S', 'V']
+    Im_Bpi = ['B5','B5T','B5X','BYZ', 'pi', 'X', 'T']
+    Re_BsK = ['Bs5','Bs5T','Bs5X','BsYZ', 'K', 'Ss', 'Vs']
+    Im_BsK = ['Bs5','Bs5T','Bs5X','BsYZ', 'K', 'Xs', 'Ts']
     options = [[Re_Bpi, Im_Bpi], [Re_BsK, Im_BsK]]
     #re_half -> pair index = 0
     Pair_Index = 0

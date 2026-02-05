@@ -555,8 +555,8 @@ def make_prior(Fit,N,allcorrs,currents,daughters,parents,loosener,data,notwist0,
         if corr in daughters:
             #The numbers 2.05 and 1.85 come from pdg mass splitting predicitons between n=0 and n=1 state
             #splittings are scaled in units of lambda QCD = En_gvar.mean = 0.5 in lattice units
-            if 'pi' in corr: dE_n_eq_1 = '{0}({1})'.format(2.05*En_gvar.mean, En_gvar.sdev) 
-            if 'K' in corr: dE_n_eq_1 = '{0}({1})'.format(1.85*En_gvar.mean, En_gvar.sdev)
+            if 'pi' in corr: dE_n_eq_1 = '{0}({1})'.format(2*En_gvar.mean, En_gvar.sdev) #2.05
+            if 'K' in corr: dE_n_eq_1 = '{0}({1})'.format(2*En_gvar.mean, En_gvar.sdev) #1.85
             for twist in Fit['twists']:
                 if twist =='0.0' and corr in notwist0:
                     pass
