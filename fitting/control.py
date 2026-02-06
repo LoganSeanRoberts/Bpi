@@ -655,8 +655,8 @@ new_main = False
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
-Ensemble_Index = 0
-Decay_Index = 0
+Ensemble_Index = 4
+Decay_Index = 1
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
 #
@@ -714,10 +714,11 @@ if Only_2pts == True:
     B = ['B5','B5T','B5X','BYZ']
     Bs = ['Bs5','Bs5T','Bs5X','BsYZ']
     curr = ['S', 'V', 'X', 'T']
+    currs = ['Ss', 'Vs', 'Xs', 'Ts']
     #FitCorrs = np.array([B + Bs + ['pi', 'K']] ,dtype=object)
     if Decay_Index == 0: FitCorrs = np.array([B + ['pi'] + curr] ,dtype=object)  
     #if Decay_Index == 0: FitCorrs = np.array([['B5'] + ['pi'] + ['S']] ,dtype=object)  
-    elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K']],dtype=object) 
+    elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K'] + currs],dtype=object) 
     #else: print('Invalid Decay Index, must be 0 or 1, you have chosen {}'.format(Decay_Index))
 
 
