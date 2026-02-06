@@ -351,6 +351,7 @@ if do_plots == True:
     #colors = ['#377eb8', '#ff7f00', '#4daf4a', '#f781bf'] #ideally these are color blind friendly?
     colors = ['blue', 'red', 'green', 'purple']
     
+    
     markers = ['^', '>', 'v', '<', 'D']
 
     dict0, dict1, dict2, dict3, dict4 = get_lattice_FFofz_dicts(call_str, ens_list, curr_tuple_list, twist_dict, q2_dict, aE_dict, Fit_dict, FF_data_dict, post_dict, non_gv_dict)
