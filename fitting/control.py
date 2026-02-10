@@ -651,7 +651,7 @@ UF['binsize'] = 0
 ### If the chi2/dof of new wavg > 1, the wavg's uncertainty is scaled by sqrt(chi2/dof)
 #### Note, new main is set up to always fit all FitCorrs.  Have to manually change it otherwise
 ##### But, changing twists and masses should still work.
-new_main = False
+new_main = True
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
@@ -671,9 +671,9 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 #
 PriorLoosener = 1.0
 Nexp = 4  
-FitMasses = [0]#,1,2,3]                                # Choose which masses to fit
-FitTwists = [0,1]                           # Choose which twists to fit
-FitTs = [3]
+FitMasses = [0,1,2,3]                                # Choose which masses to fit
+FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
+FitTs = [0,1,2,3]
 
 # Global fit by decay channel options
 fit_by_decay_channel_method = False
@@ -709,16 +709,16 @@ if GBF_testing_3pt == True:
     FitCorrs = np.array([mother[comp_key] + daughter[comp_key] , current[comp_key]] ,dtype=object)
 
 ##Solo 2pt testing
-Only_2pts = True
+Only_2pts = False
 if Only_2pts == True:
     B = ['B5','B5T','B5X','BYZ']
     Bs = ['Bs5','Bs5T','Bs5X','BsYZ']
     curr = ['S', 'V', 'X', 'T']
     currs = ['Ss', 'Vs', 'Xs', 'Ts']
     #FitCorrs = np.array([B + Bs + ['pi', 'K']] ,dtype=object)
-    if Decay_Index == 0: FitCorrs = np.array([B + ['pi'] + curr] ,dtype=object)  
+    if Decay_Index == 0: FitCorrs = np.array([B + ['pi']] ,dtype=object)  
     #if Decay_Index == 0: FitCorrs = np.array([['B5'] + ['pi'] + ['S']] ,dtype=object)  
-    elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K'] + currs],dtype=object) 
+    elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K']],dtype=object) 
     #else: print('Invalid Decay Index, must be 0 or 1, you have chosen {}'.format(Decay_Index))
 
 
@@ -728,7 +728,7 @@ noise = False
 SepMass = False                                 #defunct funcitonality, keep false
 SvdFactor = Fit['svd']                                     # Multiplies saved SVD
              # Multiplies all prior error by loosener
-Tolerance = 1e-6                  # Digits of precision for fit.  Default is 1e-8, only implemented for chained marg fits
+Tolerance = 1e-8                  # Digits of precision for fit.  Default is 1e-8, only implemented for chained marg fits
                           #Number of exponentials used to model fit, 3 or 4 is typical
 Nmarg_non = 4                           #If Marginilisation = true then fit will only consider the bottom Nmarg_non exponentials
 Nmarg_osc = 4                           #If Marginilisation = true then fit will only consider the bottom Nmarg_osc exponentials
@@ -843,23 +843,24 @@ def alt_main():
     prior = make_prior(Fit,Nexp,allcorrs,currents,daughters,parents,PriorLoosener,data,notwist0,non_oscillating,log2sqrt,Amp_mother_scaling, FitTwists=FitTwists)
     im_fit = re_im_fit(data, prior, Nexp, models, svdcut, Fit, noise, allcorrs)
 
-    #Now we combine previous fits, doing a weighted average of the daughter mesons
+    #Now we combine previous fits, doing a weighted average of the mesons
     combined_fit = gv.BufferDict()
     temp_re, temp_im = gv.BufferDict(), gv.BufferDict()
     temp_dicts = (temp_re, temp_im)
-    daughter = ('pion', 'kaon')[Decay_Index]
+    mesons = (('Hl', 'pion'), ('Hs', 'kaon'))[Decay_Index]
     tick = 0
     for fitp in (re_fit, im_fit):
         for key in fitp:
-            if daughter not in key:
-                if key in ('eps_pi2','eps_K2','osc_pi2', 'osc_K2', 'A_pi2', 'A_K2'):
-                    temp_dicts[tick][key] = fitp[key]
-                else: combined_fit[key] = fitp[key] 
-            elif daughter in key:
-                temp_dicts[tick][key] = fitp[key] 
-            else: print('key error in alt_main() func')
+            for meson in mesons:
+                if meson not in key:
+                    if key in ('eps_pi2','eps_K2','osc_pi2', 'osc_K2', 'A_pi2', 'A_K2'):
+                        temp_dicts[tick][key] = fitp[key]
+                    else: combined_fit[key] = fitp[key] 
+                elif meson in key:
+                    temp_dicts[tick][key] = fitp[key] 
+                else: print('key error in alt_main() func')
         tick += 1
-    #Now we can get the weighted average of each daughter meson fitp and add to combined fit
+    #Now we can get the weighted average of each meson fitp and add to combined fit
     ##checking that dict keys and lengths match
     key_tick = 0
     for key in temp_re:
