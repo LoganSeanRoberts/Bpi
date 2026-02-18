@@ -651,12 +651,12 @@ UF['binsize'] = 0
 ### If the chi2/dof of new wavg > 1, the wavg's uncertainty is scaled by sqrt(chi2/dof)
 #### Note, new main is set up to always fit all FitCorrs.  Have to manually change it otherwise
 ##### But, changing twists and masses should still work.
-new_main = True
+new_main = False
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
 Ensemble_Index = 4
-Decay_Index = 1
+Decay_Index = 0
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
 #
@@ -670,16 +670,16 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 #Fit['special_Fp_VVon_widener'] = 
 #
 PriorLoosener = 1.0
-Nexp = 4  
-FitMasses = [0,1,2,3]                                # Choose which masses to fit
-FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
-FitTs = [0,1,2,3]
+Nexp = 3  
+FitMasses = [0,1]                                # Choose which masses to fit
+FitTwists = [0,1,2]                           # Choose which twists to fit
+FitTs = [3]
 
 # Global fit by decay channel options
-fit_by_decay_channel_method = False
+fit_by_decay_channel_method =  True
 if fit_by_decay_channel_method == True:
     Bpi_batch = ['B5','B5T','B5X','BYZ', 'pi', 'S', 'V', 'X', 'T']
-    BsK_batch = ['Bs5','Bs5T','Bs5X','BsYZ', 'K', 'Xs', 'Ts']
+    BsK_batch = ['Bs5','Bs5T','Bs5X','BsYZ', 'Ss', 'Vs', 'K', 'Xs', 'Ts']
     Decay_Options = [Bpi_batch, BsK_batch]
     FitCorrs = np.array([Decay_Options[Decay_Index]],dtype = object)
     decay_tags = ['Hpi','HsK']
@@ -872,7 +872,7 @@ def alt_main():
             if key in ('eps_pi2','eps_K2','osc_pi2', 'osc_K2', 'A_pi2', 'A_K2'):
                 wavg = lsqfit.wavg((temp_re[key], temp_im[key]))
                 print('Weighted average of {} = {}'.format(key, wavg))
-                print('--- wavg.chi2/dof =', round(wavg.chi2/wavg.dof,3))
+                #print('--- wavg.chi2/dof =', round(wavg.chi2/wavg.dof,3))
                 if (wavg.chi2/wavg.dof) > 1:
                     S = gv.sqrt(wavg.chi2/wavg.dof)
                     print('--- wavg.chi2/dof > 1.  Scaling by S = sqrt(chi^2/dof) = ', round(S,3))
@@ -888,14 +888,14 @@ def alt_main():
                 for n in range(Nexp):
                     wavg_n = lsqfit.wavg((gv.exp(temp_re[key][n]), gv.exp(temp_im[key][n])))
                     if n == 0:
-                        print('Weighted average of ground state {} = {}'.format(new_key, wavg_n))
-                        print('--- wavg.chi2/dof =', round(wavg_n.chi2/wavg_n.dof,3))
+                        print('{} ground state wavg = {}, wavg.chi2/dof = {}'.format(new_key, wavg_n, round(wavg_n.chi2/wavg_n.dof,3)))
+                        #print('--- wavg.chi2/dof =', round(wavg_n.chi2/wavg_n.dof,3))
                         if (wavg_n.chi2) > 1:
                             S = gv.sqrt(wavg_n.chi2)
-                            print('--- wavg.chi2/dof > 1.  Scaling by S = sqrt(chi^2/dof) = ', round(S,3))
+                            print('--- wavg.chi2/dof > 1.  Scaling by sqrt(chi^2/dof) = ', round(S,3))
                             dy = wavg_n.sdev * gv.sqrt(S**2-1) / wavg_n.mean
                             scaled_wavg = wavg_n * gv.gvar(1.0,dy)
-                            print('--------- New weighted average of {} = {}'.format(new_key, scaled_wavg))
+                            print('--------- New wavg = {}'.format(scaled_wavg))
                             wavg_n = scaled_wavg
                     wavg.append(wavg_n)
                     log_wavg.append(gv.log(wavg_n))
@@ -903,7 +903,7 @@ def alt_main():
                 log_wavg = np.array(log_wavg)
                 combined_fit[key] = log_wavg
                 combined_fit[new_key] = wavg
-            print('-'*70)
+            #print('-'*70)
             
     #Saving gvdump and txt version of final combined fit
     if SaveFit == True: alt_save_fit(combined_fit, Fit['conf'], Decay_Index)

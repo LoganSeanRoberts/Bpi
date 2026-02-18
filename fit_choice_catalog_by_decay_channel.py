@@ -16,7 +16,7 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
     ### UF - Temp Temp Temp
     UF_fits = {}
    
-    Sep2025 = True
+    Sep2025 = False
     if Sep2025 == True:
         F_fits['Hpi'] = d + 'F_Hpi_2025-08-30 18:05:40.638677.pickle'
         F_fits['HsK'] = d + 'F_HsK_2025-08-30 22:55:11.520107.pickle'
@@ -48,7 +48,7 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
         SFp_fits['HsK'] = d + 'SFp_HsK_2025-10-23 20:17:46.862282.pickle'
         
 
-    Nov2025_3ptTwistPriors = True
+    Nov2025_3ptTwistPriors = False
     if Nov2025_3ptTwistPriors == True:
         F_fits['Hpi'] = d + 'F_Hpi_2025-11-21 18:35:50.574444.pickle'
         F_fits['HsK'] = d + 'F_HsK_2025-11-23 08:43:12.156205.pickle'
@@ -65,7 +65,7 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
         UF_fits['Hpi'] = d + 'UF_Hpi_2025-11-23 02:38:54.064933.pickle'
         UF_fits['HsK'] = d + 'UF_HsK_2025-11-26 17:01:39.677199.pickle'
 
-    chi2_scaling = True
+    chi2_scaling = False
     if chi2_scaling == True:
         F_fits['Hpi'] = d + 'F_Hpi_2025-12-03 17:46:58.004450.pickle'
         F_fits['HsK'] = d + 'F_HsK_2025-12-04 10:02:16.226320.pickle'
@@ -81,6 +81,24 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
 
         UF_fits['Hpi'] = d + 'UF_Hpi_2025-12-04 08:31:36.634354.pickle'
         UF_fits['HsK'] = d + 'UF_HsK_2025-12-06 16:00:01.814763.pickle'
+
+    Feb2026 = True
+    if Feb2026 == True:
+        F_fits['Hpi'] = d + 'F_Hpi_2026-02-10 17:05:23.912376.pickle'
+        F_fits['HsK'] = d + 'F_HsK_2026-02-12 09:03:55.686073.pickle'
+
+        Fp_fits['Hpi'] = d + 'Fp_Hpi_2026-02-10 19:56:22.394755.pickle'
+        Fp_fits['HsK'] = d + 'Fp_HsK_2026-02-12 11:44:55.504225.pickle'
+
+        SF_fits['Hpi'] = d + 'SF_Hpi_2026-02-10 23:17:19.763699.pickle'
+        SF_fits['HsK'] = d + 'SF_HsK_2026-02-12 15:16:00.160477.pickle'
+
+        SFp_fits['Hpi'] = d + 'SFp_Hpi_2026-02-11 03:00:20.523748.pickle'
+        SFp_fits['HsK'] = d + 'SFp_HsK_2026-02-12 19:19:40.515835.pickle'
+
+        UF_fits['Hpi'] = d + 'UF_Hpi_2026-02-12 06:34:06.130677.pickle'
+        UF_fits['HsK'] = d + 'UF_HsK_2026-02-13 00:28:57.377496.pickle'
+
 
     ### Grouping together
     All_fits = {}

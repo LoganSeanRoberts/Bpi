@@ -21,8 +21,8 @@ plt.rcParams.update({
 # Defining the fit funciton is necessary for either functions
 do_fit = True
 do_plots = True
-add_keyword = 'Dec08chi2scaling' #Extra keyword you can add to file name of gv dump to help pick it out in directory
-save_fit = False #If true, will save fit in directory given below
+add_keyword = 'FEB2026' #Extra keyword you can add to file name of gv dump to help pick it out in directory
+save_fit = True #If true, will save fit in directory given below
 save_corr_matrix_dict = True  #save_corr_matrix_dict requires do_plots = True and save_fit = True, 
 
 #If we just want to plot without having to rerun the fit, we need to include the filename of the gvdump we want to pull from.
