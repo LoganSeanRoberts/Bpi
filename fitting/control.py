@@ -655,8 +655,8 @@ new_main = False
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
-Ensemble_Index = 4
-Decay_Index = 0
+Ensemble_Index = 0
+Decay_Index = 1
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
 #
@@ -670,10 +670,10 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 #Fit['special_Fp_VVon_widener'] = 
 #
 PriorLoosener = 1.0
-Nexp = 3  
-FitMasses = [0,1]                                # Choose which masses to fit
-FitTwists = [0,1,2]                           # Choose which twists to fit
-FitTs = [3]
+Nexp = 4  
+FitMasses = [0]                                # Choose which masses to fit
+FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
+FitTs = [0,1,2,3]
 
 # Global fit by decay channel options
 fit_by_decay_channel_method =  True
@@ -722,7 +722,7 @@ if Only_2pts == True:
     #else: print('Invalid Decay Index, must be 0 or 1, you have chosen {}'.format(Decay_Index))
 
 
-SaveFit = True
+SaveFit = False
 Append_Key_Fit_Stats = False       #Appends csv file 'Key_Fit_Stats.csv', only funcitonal if Savefit = True. mostly used for svd testing
 noise = False
 SepMass = False                                 #defunct funcitonality, keep false

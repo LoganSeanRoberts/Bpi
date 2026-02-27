@@ -269,18 +269,21 @@ def SVD_diagnosis(Fit,models,corrs,svdfac,currents,SepMass):
        if '{0}tmin'.format(corr) in Fit:
            filename += '{0}'.format(Fit['{0}tmin'.format(corr)])
  
-    #print(filename)
+    print(filename)
     if os.path.isfile(filename) and os.path.getsize(filename) > 0:
         pickle_off = open(filename,"rb")
         svd = pickle.load(pickle_off)
         print('Loaded SVD for {0} : {1:.2g} x {2} = {3:.2g}'.format(corrs,svd,svdfac,svd*svdfac))
         pickle_off.close()
+
     else:
         print('Calculating SVD for {0}'.format(corrs))
         s = gv.dataset.svd_diagnosis(cf.read_dataset('{0}{1}.gpl'.format(Fit['file_location'],Fit['filename']),binsize=binsize), models=models, nbstrap=20)
         svd = s.svdcut
         ######## save plot ##########################
-        '''plt.figure()
+        print('Plotting SVD diagnosis...')
+        plt.figure(figsize=(8,6))
+        plt.tight_layout()
         x = s.val / s.val[-1]
         ratio = s.bsval / s.val
         idx = x > s.mincut
@@ -288,14 +291,24 @@ def SVD_diagnosis(Fit,models,corrs,svdfac,currents,SepMass):
         x = x[idx]
         y = gv.mean(ratio)
         yerr = gv.sdev(ratio)
-        plt.errorbar(x=x, y=y, yerr=yerr, fmt='+', color='b')
+        plt.errorbar(x=x, y=y, yerr=yerr, fmt='+', color='blue')
         sig = (2. / len(s.val)) ** 0.5
-        plt.plot([x[0], x[-1]], [1. - sig, 1. - sig], 'k:')
+        #plt.plot([x[0], x[-1]], [1. - sig, 1. - sig], 'k:')
+        plt.axhline(1. - sig, ls = ':', color = 'k' )
         plt.axhline(1,ls='--',color='k')
-        plt.axvline(s.svdcut,ls=':',color='g')
-        #plt.axvline(0.013,ls='--',color='g')
+        plt.axvline(s.svdcut,ls='--',color='red')
+        plt.text(s.svdcut + .001, 0.7, r'$\kappa = {0:.2g}$'.format(s.svdcut), color = 'red')
+        #plt.axvline(0.013,ls='--',color='red')
         plt.xscale('log')
+        plt.xlabel(r'$\lambda_n / \lambda_\mathrm{{max}}$')
+        plt.ylabel(r'$\lambda^\mathrm{{bootstrap}}_n / \lambda_n$')
+        ax = plt.gca()
+        plt.minorticks_on()
+        plt.tick_params(axis='y', which='both', labelright=True, right=True, direction = 'in')
+        plt.tick_params(axis = 'x',  which= 'both', top = False, direction = 'in')
         #plt.savefig('svd_plots/{0}.pdf'.format(filename.split('/')[1]))'''
+        plt.savefig('svd_plots/{}_{}.pdf'.format(Fit['conf'], datetime.datetime.now()))
+        print('SVD plot complete!')
         ###############################################
         pickle_on = open(filename,"wb")
         print('Calculated SVD for {0} : {1:.2g} x {2} = {3:.2g}'.format(corrs,svd,svdfac,svd*svdfac))

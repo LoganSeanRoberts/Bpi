@@ -11,7 +11,7 @@ from tabulate import tabulate
 #import datetime
 plt.rc("font",**{"size":14})
 plt.rcParams.update({
-    "text.usetex": True,
+    "text.usetex": False,
     "font.family": "serif"
 })
 
@@ -21,7 +21,7 @@ plt.rcParams.update({
 # Defining the fit funciton is necessary for either functions
 do_fit = True
 do_plots = True
-add_keyword = 'FEB2026' #Extra keyword you can add to file name of gv dump to help pick it out in directory
+add_keyword = 'goldstone-change' #Extra keyword you can add to file name of gv dump to help pick it out in directory
 save_fit = True #If true, will save fit in directory given below
 save_corr_matrix_dict = True  #save_corr_matrix_dict requires do_plots = True and save_fit = True, 
 
