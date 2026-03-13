@@ -74,14 +74,15 @@ def get_Scalar_stats(Scalar_amp_choice, mass_choice, twist_choice, g, spin_taste
     #print('\n')
     return m_mother, m_daughter, E_daughter, Scalar_amp, m_Goldstone
 
-def calc_Z_T(ensemble_tag): ### from https://arxiv.org/abs/2008.02024 table 8
-    #Assume ensemble order is:
-    tag_list = ['F', 'Fp', 'SF', 'SFp', 'UF']
-    Z_T_list = [gv.gvar('1.0029(43)'), gv.gvar('1.0029(43)'), gv.gvar('1.0342(43)'), 
-                gv.gvar('1.0342(43)'), gv.gvar('1.0476(42)')]
-    index = tag_list.index(ensemble_tag)
-    if index in range(5): return Z_T_list[index]
-    else: print('error in calc_Z_T function, invalid index')
+#defunct function - added correlations in control script
+# def call_Z_T(ensemble_tag): ### from https://arxiv.org/abs/2008.02024 table 8
+#     #Assume ensemble order is:
+#     tag_list = ['F', 'Fp', 'SF', 'SFp', 'UF']
+#     Z_T_list = [gv.gvar('1.0029(43)'), gv.gvar('1.0029(43)'), gv.gvar('1.0342(43)'), 
+#                 gv.gvar('1.0342(43)'), gv.gvar('1.0476(42)')]
+#     index = tag_list.index(ensemble_tag)
+#     if index in range(5): return Z_T_list[index]
+#     else: print('error in call_Z_T function, invalid index')
 
 ######################################
 ### Defining Form Factor equations ###
@@ -172,7 +173,7 @@ def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_di
         else:
             print('ERROR: Options for xVector_FF are "XVnn" and "XsVnn". Cannot apply to {}'.format(amp_choice))'''
 
-def calc_Tensor_FF(amp_choice, mass_choice, twist_choice, N_x, g, ensemble_tag, FLAG_dispersion = False):
+def calc_Tensor_FF(amp_choice, mass_choice, twist_choice, N_x, g, ensemble_tag, Z_T, FLAG_dispersion = False):
     if twist_choice == '0.0':
         return None, None, None, None, None
     else:
@@ -185,7 +186,7 @@ def calc_Tensor_FF(amp_choice, mass_choice, twist_choice, N_x, g, ensemble_tag, 
             Three_p_daughter = calc_Daughter_3Momentum(twist_choice, N_x)
             T_amp = g[(amp_choice+'_m'+mass_choice+'_tw'+twist_choice)][0][0]
             T_matrix = calc_Lattice_Current(m_Goldstone, E_daughter, T_amp, mass_choice)
-            Z_T = calc_Z_T(ensemble_tag)
+            #Z_T = call_Z_T(ensemble_tag) #defunct after adding correlation change
             fraction = (m_Goldstone+m_daughter)/(2*m_Goldstone*Three_p_daughter) ### MISSING COMPLEX NUMBER
             q_sqrd = calc_q_sqrd(m_Goldstone,m_daughter, E_daughter, FLAG_dispersion=FLAG_dispersion, twist=twist_choice, N_x=N_x)
             FF = Z_T * T_matrix * fraction

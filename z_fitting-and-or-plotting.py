@@ -21,7 +21,7 @@ plt.rcParams.update({
 # Defining the fit funciton is necessary for either functions
 do_fit = True
 do_plots = True
-add_keyword = 'goldstone-change' #Extra keyword you can add to file name of gv dump to help pick it out in directory
+add_keyword = 'Npoly=4' #Extra keyword you can add to file name of gv dump to help pick it out in directory
 save_fit = True #If true, will save fit in directory given below
 save_corr_matrix_dict = True  #save_corr_matrix_dict requires do_plots = True and save_fit = True, 
 
@@ -35,24 +35,26 @@ z_fit_gvdump_file = 'Hpi_Npoly=3_Nikjl=(3, 3, 2, 2)_chi2-by-dof=0.374_Q=1.0_logG
 # Control Panel #
 #call_str, alt_call_str, phys_strs,  s, Title = 'Hpi', 'H → π' , ('Dpi', 'Bpi'), '', (r'$D \rightarrow \pi$', r'$B \rightarrow \pi$')
 call_str, alt_call_str, phys_strs, s, Title = 'HsK', 'Hs → K' , ('DsK', 'BsK'), 's', (r'$Ds \rightarrow K$', r'$B_s \rightarrow K$')
-Npoly = 3 #This is something to change in stability testing
-Nijkl = (3,3,2,2) #The change in stability testing
+ens_list =['F', 'Fp', 'SF', 'SFp', 'UF']
+Npoly = 4 #This is something to change in stability testing
+Nijkl = (3,2,2,3) #The change in stability testing
 Lambda_QCD = 0.5
 max_iter = 5000 #max iterations do cycle fit function
 FLAG_dispersion = False #Use lattice dispersion relation to get non zero twist energies rather than fit posteriors...
                        # Note the fit will not go right if FLAG_dispersion does not match the same flag in FF_control.py
 incld_errbnds = True #IF true, plots errorbands on f(q2)lattice plots rather than just mean (note, =true looks better! use it)
+ap_disc = True #if = True, then includes (1+ap^2) term in form factor fit
 ############################################################
 #Twists from control.py in correlator fitting
 twist_dict = {'F_twists' : ['0.0','0.4281','1.282','2.1410','2.570'],
-              'Fp_twists' : ['0.0','0.58','0.87','1.13','3.000','5.311'],
+              'Fp_twists' : ['0.0','0.58','0.87','1.13','3.000'],#,'5.311'],
               'SF_twists' : ['0.0','1.261','2.108','2.666','5.059'],
               'SFp_twists' : ['0.0','2.522','4.216','7.94','10.118'],
               'UF_twists' : ['0.0','0.706','1.529','2.235','4.705']}
 
 #Initializing fit parameter / prior dictionary
 gvdump_dict = {}
-ens_list =['F', 'Fp', 'SF', 'SFp', 'UF'] ## Add to this for adding additional ensembles 
+#ens_list =['F', 'Fp', 'SF', 'SFp', 'UF'] ## Add to this for adding additional ensembles 
 #making change to try and deal wiht both vector data sets
 curr_tuple_list = [('0', 'S'), ('+', 'V'), ('+','X'), ('T','T')]
 currs3 = ['0', '+', 'T'] #calling this currs three to remind ourselves that this list only has three entries
@@ -113,7 +115,7 @@ for curr in currs3:
 #non gv dict has all non gvar lattice info
 ## a_set = None presumes that we are fitting lattice data with ensemble specific a_latt. 
 ### Otherwise phys tuple can be set as (customkey, M_H, a, M_Hs)
-def fit_func(arg, p_dict, non_gv_dict = non_gv_dict, ens_list = ens_list, call_str = call_str, phys_tuple = None, troubleshoot = False, ap_disc = True, FofM_H = False):
+def fit_func(arg, p_dict, non_gv_dict = non_gv_dict, ens_list = ens_list, call_str = call_str, phys_tuple = None, troubleshoot = False, ap_disc = ap_disc, FofM_H = False):
     FF_dict = {} #This is the dicitonary that is returned by the function
     poleterm_dict = {} #Used for continuum limit plotting along z axis
     corr_matrix_dict = {} #dict of terms that we would want a correlation matrix for: a_ns, H*, H*0, chilog
@@ -187,7 +189,9 @@ def fit_func(arg, p_dict, non_gv_dict = non_gv_dict, ens_list = ens_list, call_s
                 
                 #ChiPT logarithm term
                 if phys_tuple != None: delta_FV = 0 #phys_tuple implementation
-                else: delta_FV = p_dict['{}_delta_FV'.format(ens)]
+                else: 
+                    if ens == 'SFp': delta_FV = p_dict['{}_delta_FV'.format(ens)]
+                    else: delta_FV = non_gv_dict['{}_delta_FV'.format(ens)]
                 chi_log = calc_chi_log_L(call_str, X_pi, p_dict['g_inf'], M_mother, Lambda_QCD, p_dict['C1'], p_dict['C2'], delta_FV)            
                 #now to calculate a coefficients for a given current, ensemble, and n in Npoly.  a's are not momentum dependent.
                 
@@ -393,7 +397,9 @@ if do_plots == True:
     plot_FFofz(call_str, ens_list, curr_tuple_list, dict0, dict1, dict2, dict3, non_gv_dict, z_directory, colors, markers, plot_phys = (B_tuple, D_tuple))
     
     ## phys combination where 0,+,T all on same z plot
+    labels = [r'$f_0(q^2)$', r'$f_{+}(q^2)$', r'$f_{+}(q^2)$', r'$f_{T}(q^2, \mu = 4.8 \mathrm{GeV})$']
     plot_allcurrs_FFofz(call_str, curr_tuple_list, B_tuple, colors, labels, z_directory, 'B{}cont'.format(s))
+    labels = [r'$f_0(q^2)$', r'$f_{+}(q^2)$', r'$f_{+}(q^2)$', r'$f_{T}(q^2, \mu = 2.0 \mathrm{GeV})$']
     plot_allcurrs_FFofz(call_str, curr_tuple_list, D_tuple, colors, labels, z_directory, 'D{}cont'.format(s))
     
     phys_tuple = (phys_strs[1], 5.27941*Bscalar, 0.1715/(10000*0.1973), 5.36693*Bscalar)

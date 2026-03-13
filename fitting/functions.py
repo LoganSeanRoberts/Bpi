@@ -496,13 +496,13 @@ def make_prior(Fit,N,allcorrs,currents,daughters,parents,loosener,data,notwist0,
         if pi == 0:
             if 'pi' in corr: 
                 eps_pi2, A_pi2, osc_pi2 = gv.gvar('0.0(1.0)'), gv.gvar('0.0(1.0)'), gv.gvar('0.0(1.0)')
-                if Fit['conf'] == 'Fp': eps_pi2 = gv.gvar('0.0(36.0)')
+                if Fit['conf'] == 'Fp': eps_pi2 = gv.gvar('0.0(2.0)') #gv.gvar('0.0(36.0)')
                 prior['eps_pi2'], prior['A_pi2'], prior['osc_pi2'] = eps_pi2, A_pi2, osc_pi2
                 pi = 1 
         if K == 0:
             if 'K' in corr: 
                 eps_K2, A_K2, osc_K2 = gv.gvar('0.0(1.0)'), gv.gvar('0.0(1.0)'), gv.gvar('0.0(1.0)')
-                if Fit['conf'] == 'Fp': eps_K2 = gv.gvar('0.0(50.0)')
+                if Fit['conf'] == 'Fp': eps_K2 = gv.gvar('0.0(1.0)') #gv.gvar('0.0(50.0)')
                 if Fit['conf'] == 'SF': eps_K2 = gv.gvar('0.0(5.0)') #1.0
                 if Fit['conf'] == 'SFp': eps_K2 = gv.gvar('0.0(3.0)')
                 prior['eps_K2'], prior['A_K2'], prior['osc_K2'] = eps_K2, A_K2, osc_K2

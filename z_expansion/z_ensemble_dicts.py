@@ -29,7 +29,7 @@ def import_Ensemble_Dictionaries():
     non_gv_dict['F_charm_tuned'] = float(non_gv_dict['F_masses'][0]) #set to lowest heavy quark mass option
     non_gv_dict['F_eta_s'] = (gv.gvar('0.314015(89)') / non_gv_dict['F_a']).mean #From Wills Toward accurate form factors for B-to-light meson decay from lattice QCD https://arxiv.org/pdf/2010.07980
     # ^^^ probably needs to be converted to GeV --- now it is!
-    gv_dict['F_delta_FV'] = gv.gvar('0.0(1.0)') #TEMP TEMP TEMP
+    non_gv_dict['F_delta_FV'] = 0.020801419
 
 
     #Fp['tag'] = 'Fp'
@@ -52,7 +52,7 @@ def import_Ensemble_Dictionaries():
     #IMPORTANT The following is from F5 not Fphys.  Ideally the eta_s mass is not dependent on the light quark mass, but I assume there
     ## is going to be some ofset / corection / uncertainty here.  Chris confirms this is an okay assumption
     non_gv_dict['Fp_eta_s'] = (gv.gvar('0.314015(89)') / non_gv_dict['Fp_a']).mean #From Wills Toward accurate form factors for B-to-light meson decay from lattice QCD https://arxiv.org/pdf/2010.07980
-    gv_dict['Fp_delta_FV'] = gv.gvar('0.0(1.0)') #TEMP TEMP TEMP
+    non_gv_dict['Fp_delta_FV'] = 0.06985291
 
     #SF['tag'] = 'SF'
     non_gv_dict['SF_masses'] = ['0.274','0.5','0.65','0.8']
@@ -73,7 +73,7 @@ def import_Ensemble_Dictionaries():
     non_gv_dict['SF_charm_tuned'] = float(non_gv_dict['SF_masses'][0]) #set to lowest heavy quark mass option
     non_gv_dict['SF_eta_s'] = (gv.gvar('0.207020(84)') / non_gv_dict['SF_a']).mean #From Wills Toward accurate form factors for B-to-light meson decay from lattice QCD https://arxiv.org/pdf/2010.07980
     #^^^ Meson mass now in GeV
-    gv_dict['SF_delta_FV'] = gv.gvar('0.0(1.0)') #TEMP TEMP TEMP
+    non_gv_dict['SF_delta_FV'] = 0.020801419
 
 
     #SFp['tag'] = 'SFp'
@@ -96,7 +96,7 @@ def import_Ensemble_Dictionaries():
     #IMPORTANT The following is from SF5 not SFphys.  Ideally the eta_s mass is not dependent on the light quark mass, but I assume there
     ## is going to be some ofset / corection / uncertainty here.  Chris confirmed this is okay asusmption
     non_gv_dict['SFp_eta_s'] = (gv.gvar('0.207020(84)') / non_gv_dict['SFp_a']).mean #From Wills Toward accurate form factors for B-to-light meson decay from lattice QCD https://arxiv.org/pdf/2010.07980
-    gv_dict['SFp_delta_FV'] = gv.gvar('0.0(1.0)') #TEMP TEMP TEMP
+    gv_dict['SFp_delta_FV'] = gv.gvar('0.0(0.1)') #TEMP 
 
 
     #UF['tag'] = 'UF'
@@ -117,7 +117,7 @@ def import_Ensemble_Dictionaries():
     non_gv_dict['UF_charm_sea'] = 0.188
     non_gv_dict['UF_charm_tuned'] = float(non_gv_dict['UF_masses'][0]) #set to lowest heavy quark mass option
     non_gv_dict['UF_eta_s'] = (gv.gvar('0.15407(17)') / non_gv_dict['UF_a']).mean  #From Wills Toward accurate form factors for B-to-light meson decay from lattice QCD https://arxiv.org/pdf/2010.07980
-    gv_dict['UF_delta_FV'] = gv.gvar('0.0(1.0)') #TEMP TEMP TEMP
+    non_gv_dict['UF_delta_FV'] = 0.027538708
     ##############################################################################################
 
     non_gv_dict['eta_s_phys'] = 0.6885 #GeV

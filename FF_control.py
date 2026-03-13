@@ -10,6 +10,22 @@ from fit_choice_catalog_by_decay_channel import *
 ########################
 ### Ensemble Prereqs ###
 ########################
+#Implementing correlated Z_T correlations, rather than drawing from list
+Z_Ts = gv.gvar(dict(f = '1.0029(43)', sf = '1.0342(43)', uf = '1.0476(42)'))
+corr = {}
+corr['f', 'f'] = 1
+corr['f','sf'] = 0.99605
+corr['f','uf'] = 0.93562
+#
+corr['sf','f'] = 0.99605
+corr['sf','sf'] = 1
+corr['sf','uf'] = 0.93197
+#
+corr['uf','f'] = 0.93562
+corr['uf','sf'] = 0.93197
+corr['uf','uf'] = 1
+#
+Z_Ts = gv.correlate(Z_Ts, corr)
 
 F = collections.OrderedDict()
 F['tag'] = 'F'
@@ -22,6 +38,8 @@ F['tp'] = 96
 F['L'] = 32
 F['a'] = 0.1715/(1.9006*0.1973) # = 1GeV in lattice untis
 F['w0/a'] = gv.gvar('1.9006(20)')
+F['Z_T'] = Z_Ts['f']
+
 
 Fp = collections.OrderedDict()
 Fp['tag'] = 'Fp'
@@ -34,6 +52,7 @@ Fp['tp'] = 96
 Fp['L'] = 64
 Fp['a'] = 0.1715/(1.9518*0.1973)
 Fp['w0/a'] = gv.gvar('1.9518(7)')
+Fp['Z_T'] = Z_Ts['f']
 
 SF = collections.OrderedDict()
 SF['tag'] = 'SF'
@@ -46,6 +65,7 @@ SF['tp'] = 144
 SF['L'] = 48
 SF['a'] = 0.1715/(2.896*0.1973)
 SF['w0/a'] = gv.gvar('2.896(6)')
+SF['Z_T'] = Z_Ts['sf']
 
 
 SFp = collections.OrderedDict()
@@ -59,6 +79,7 @@ SFp['tp'] = 192
 SFp['L'] = 96
 SFp['a'] = 0.1715/(3.0170*0.1973) #from 2207.04765
 SFp['w0/a'] = gv.gvar('3.0170(23)')
+SFp['Z_T'] = Z_Ts['sf']
 
 
 UF = collections.OrderedDict()
@@ -72,6 +93,8 @@ UF['tp'] = 192
 UF['L'] = 64
 UF['a'] = 0.1715/(3.892*0.1973)
 UF['w0/a'] = gv.gvar('3.892(12)')
+UF['Z_T'] = Z_Ts['uf']
+
 
 #####################
 ### Main Function ###
@@ -79,7 +102,7 @@ def main_loop(ensemble, Strange, print_notes=False, append_csv= False, do_gvdump
     ### Automatic ###
     mass_choice = [0,1,2,3]
     twist_choice = [0,1,2,3,4]
-    if ensemble['tag'] == 'Fp': twist_choice = [0,1,2,3,4,5]
+    #if ensemble['tag'] == 'Fp': twist_choice = [0,1,2,3,4,5]
 
     m_light = float(ensemble['m_l'])    #setting ensemble specific variables
     m_strange = float(ensemble['m_s'])
@@ -133,7 +156,7 @@ def main_loop(ensemble, Strange, print_notes=False, append_csv= False, do_gvdump
             S_FF = calc_Scalar_FF(amp3_tags[0], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
             tV_FF = calc_tVector_FF(amp3_tags[1], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
             xV_FF = calc_xVector_FF(amp3_tags[2], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
-            T_FF = calc_Tensor_FF(amp3_tags[3], heavy_q_mass, twist, N_x, g, ensemble['tag'], FLAG_dispersion = FLAG_dispersion)
+            T_FF = calc_Tensor_FF(amp3_tags[3], heavy_q_mass, twist, N_x, g, ensemble['tag'], ensemble['Z_T'], FLAG_dispersion = FLAG_dispersion)
             #Par_FF = calc_Parallel_FF(amp3_tags[1], heavy_q_mass, twist, N_x, g, ensemble['w0/a'])
             #Perp_FF = calc_Perpendicular_FF(amp3_tags[2], heavy_q_mass, twist, N_x, g, ensemble['w0/a'])
 

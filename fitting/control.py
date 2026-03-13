@@ -651,11 +651,11 @@ UF['binsize'] = 0
 ### If the chi2/dof of new wavg > 1, the wavg's uncertainty is scaled by sqrt(chi2/dof)
 #### Note, new main is set up to always fit all FitCorrs.  Have to manually change it otherwise
 ##### But, changing twists and masses should still work.
-new_main = False
+new_main = True
 #Ensemble index: [F, Fp, SF, SFp, UF] == 0, 1, 2, 3, 4
 ## Decay Index : 0 -> H to pi, 1 -> Hs to K
 ###Pair index = 0 : S + V, = 1 : X + T, only used if fit_by_decay_and_curr == True
-Ensemble_Index = 0
+Ensemble_Index = 1
 Decay_Index = 1
 #in altmain = true then there is no need to change pair index here
 Pair_Index = 0
@@ -671,8 +671,8 @@ Fit['special_Fp_pion_n=1_tightener'] = 0.05 #IN case of Hpi, accounts for spurio
 #
 PriorLoosener = 1.0
 Nexp = 4  
-FitMasses = [0]                                # Choose which masses to fit
-FitTwists = [0,1,2,3,4,5]                           # Choose which twists to fit
+FitMasses = [0,1,2,3]                                # Choose which masses to fit
+FitTwists = [0,1,2,3,4]                           # Choose which twists to fit
 FitTs = [0,1,2,3]
 
 # Global fit by decay channel options
@@ -716,13 +716,13 @@ if Only_2pts == True:
     curr = ['S', 'V', 'X', 'T']
     currs = ['Ss', 'Vs', 'Xs', 'Ts']
     #FitCorrs = np.array([B + Bs + ['pi', 'K']] ,dtype=object)
-    if Decay_Index == 0: FitCorrs = np.array([B + ['pi']] ,dtype=object)  
+    if Decay_Index == 0: FitCorrs = np.array([B  + ['pi']] ,dtype=object)  
     #if Decay_Index == 0: FitCorrs = np.array([['B5'] + ['pi'] + ['S']] ,dtype=object)  
     elif Decay_Index == 1: FitCorrs = np.array([Bs + ['K']],dtype=object) 
     #else: print('Invalid Decay Index, must be 0 or 1, you have chosen {}'.format(Decay_Index))
 
 
-SaveFit = False
+SaveFit = True
 Append_Key_Fit_Stats = False       #Appends csv file 'Key_Fit_Stats.csv', only funcitonal if Savefit = True. mostly used for svd testing
 noise = False
 SepMass = False                                 #defunct funcitonality, keep false
