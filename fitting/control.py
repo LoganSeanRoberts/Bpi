@@ -642,7 +642,7 @@ UF['threePtTagTs'] = '3pt_tensor_HsK_width{0}_m{2}_th{4}'
 #UF['svd'] = 0.02
 UF['svd'] = 0.1
 UF['binsize'] = 0
-                                                
+                                                 
 ################ USER INPUTS ################################
 #############################################################
 # If new main = True, then we use an alternate to the main function developed from 18 July 2025.  
