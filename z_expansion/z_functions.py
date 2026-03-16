@@ -413,7 +413,7 @@ def print_results(fit, Npoly, Ni, currs3, call_str, Lambda_QCD):#, params):
 def format_corr_mtrx(corr_matrix_dict):
     new_dict = {}
     seq_dict = {}
-    seq = ['a^+/0_0', 'a^0_1', 'a^0_2', 'a^+_1', 'a^+_2', 'a^T_0', 'a^T_1', 'a^T_2', 'H*0', 'H*', 'chi_log']
+    seq = ['a^+/0_0', 'a^0_1', 'a^0_2', 'a^0_3', 'a^+_1', 'a^+_2', 'a^+_3', 'a^T_0', 'a^T_1', 'a^T_2', 'a^T_3', 'H*0', 'H*', 'chi_log']
     for key in corr_matrix_dict:
         nkey = key.split('-')[1]
         if type(corr_matrix_dict[key]) != type([]):
@@ -796,9 +796,9 @@ def plot_FFofq2_lattice(call_str, ens_list, curr_tuple_list, q2_dict, FF_data_di
                 plt.errorbar(x_means,y_means,yerr=y_errs, label = r'$am_h={}$'.format(mass), ms = 8, marker = markers[mi], capsize = 2, linestyle = '', color = colors[mi], mfc='white')
                 #if curr_pair[0] == '0':
                 #    print(call_str, ens, mass, round((float(mass)/non_gv_dict['{}_a'.format(ens)])/4.18, 2))
-                if incld_errbnds == False:
-                    plt.plot(q2_linspace, FF_latt_cont, color = colors[mi], linestyle = ':')
-                elif incld_errbnds == True:
+                #if incld_errbnds == False:
+                #    plt.plot(q2_linspace, FF_latt_cont, color = colors[mi], linestyle = ':')
+                if incld_errbnds == True:
                     plt.fill_between(q2_linspace, np.array(FF_latt_cont)+np.array(FF_errs), np.array(FF_latt_cont)-np.array(FF_errs), alpha = 0.2, color = colors[mi])
                 mi += 1
             if plot_phys != False:

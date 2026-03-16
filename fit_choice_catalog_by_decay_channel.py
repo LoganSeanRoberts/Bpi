@@ -98,6 +98,11 @@ def fit_Pick_by_Decay_Channel(ensemble, decay_channel):
 
         UF_fits['Hpi'] = d + 'UF_Hpi_2026-02-12 06:34:06.130677.pickle'
         UF_fits['HsK'] = d + 'UF_HsK_2026-02-13 00:28:57.377496.pickle'
+    
+    NoFpMaxTwist = True
+    if NoFpMaxTwist == True:
+        Fp_fits['Hpi'] = d + 'Fp_Hpi_2026-03-13 22:59:36.058523.pickle'
+        Fp_fits['HsK'] = d + 'Fp_HsK_2026-03-13 23:02:34.309025.pickle'
 
 
     ### Grouping together

@@ -11,7 +11,7 @@ from tabulate import tabulate
 #import datetime
 plt.rc("font",**{"size":14})
 plt.rcParams.update({
-    "text.usetex": False,
+    "text.usetex": True,
     "font.family": "serif"
 })
 
@@ -19,22 +19,22 @@ plt.rcParams.update({
 # The functions are to 1) do the z expansion fit
 #                  and 2) make z-expansion plots
 # Defining the fit funciton is necessary for either functions
-do_fit = True
+do_fit = False
 do_plots = True
-add_keyword = 'Npoly=4' #Extra keyword you can add to file name of gv dump to help pick it out in directory
+add_keyword = 'Mar16_ap_disc=true' #Extra keyword you can add to file name of gv dump to help pick it out in directory
 save_fit = True #If true, will save fit in directory given below
 save_corr_matrix_dict = True  #save_corr_matrix_dict requires do_plots = True and save_fit = True, 
 
 #If we just want to plot without having to rerun the fit, we need to include the filename of the gvdump we want to pull from.
 #File should be a .pickle file in the following defined directory:
 output_dir = 'z_expansion/fit_outputs'
-z_fit_gvdump_file = 'Hpi_Npoly=3_Nikjl=(3, 3, 2, 2)_chi2-by-dof=0.374_Q=1.0_logGBF=600_Oct22.pickle'
-#z_fit_gvdump_file = 'HsK_Npoly=3_Nikjl=(3, 3, 2, 2)_chi2-by-dof=1.382_Q=0.0_logGBF=706_Sep3-tensor-fix.pickle'
-#z_fit_gvdump_file = ''
+z_fit_gvdump_file = 'Hpi_Npoly=4_Nikjl=(3, 2, 2, 3)_chi2-by-dof=0.263_Q=1.0_logGBF=579_Mar16.pickle'
+#z_fit_gvdump_file = 'HsK_Npoly=4_Nikjl=(3, 2, 2, 3)_chi2-by-dof=0.474_Q=1.0_logGBF=845_Mar16.pickle'
+
 
 # Control Panel #
-#call_str, alt_call_str, phys_strs,  s, Title = 'Hpi', 'H → π' , ('Dpi', 'Bpi'), '', (r'$D \rightarrow \pi$', r'$B \rightarrow \pi$')
-call_str, alt_call_str, phys_strs, s, Title = 'HsK', 'Hs → K' , ('DsK', 'BsK'), 's', (r'$Ds \rightarrow K$', r'$B_s \rightarrow K$')
+call_str, alt_call_str, phys_strs,  s, Title = 'Hpi', r'$H \rightarrow \pi$' , ('Dpi', 'Bpi'), '', (r'$D \rightarrow \pi$', r'$B \rightarrow \pi$')
+#call_str, alt_call_str, phys_strs, s, Title = 'HsK', r'$H_s \rightarrow K$' , ('DsK', 'BsK'), 's', (r'$D_s \rightarrow K$', r'$B_s \rightarrow K$')
 ens_list =['F', 'Fp', 'SF', 'SFp', 'UF']
 Npoly = 4 #This is something to change in stability testing
 Nijkl = (3,2,2,3) #The change in stability testing
@@ -43,7 +43,7 @@ max_iter = 5000 #max iterations do cycle fit function
 FLAG_dispersion = False #Use lattice dispersion relation to get non zero twist energies rather than fit posteriors...
                        # Note the fit will not go right if FLAG_dispersion does not match the same flag in FF_control.py
 incld_errbnds = True #IF true, plots errorbands on f(q2)lattice plots rather than just mean (note, =true looks better! use it)
-ap_disc = True #if = True, then includes (1+ap^2) term in form factor fit
+ap_disc = False #if = True, then includes (1+ap^2) term in form factor fit
 ############################################################
 #Twists from control.py in correlator fitting
 twist_dict = {'F_twists' : ['0.0','0.4281','1.282','2.1410','2.570'],

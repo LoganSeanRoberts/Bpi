@@ -153,9 +153,9 @@ def main_loop(ensemble, Strange, print_notes=False, append_csv= False, do_gvdump
         #Perpendicular_FFs = []
         for twist in twist_list:
             #Distinct FF data point for a given current, mass, and twist
-            S_FF = calc_Scalar_FF(amp3_tags[0], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
-            tV_FF = calc_tVector_FF(amp3_tags[1], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
-            xV_FF = calc_xVector_FF(amp3_tags[2], heavy_q_mass, twist, m_spectator, N_x, g, FLAG_dispersion = FLAG_dispersion)
+            S_FF = calc_Scalar_FF(amp3_tags[0], heavy_q_mass, twist, m_light, N_x, g, FLAG_dispersion = FLAG_dispersion)
+            tV_FF = calc_tVector_FF(amp3_tags[1], heavy_q_mass, twist, m_light, N_x, g, FLAG_dispersion = FLAG_dispersion)
+            xV_FF = calc_xVector_FF(amp3_tags[2], heavy_q_mass, twist, m_light, N_x, g, FLAG_dispersion = FLAG_dispersion)
             T_FF = calc_Tensor_FF(amp3_tags[3], heavy_q_mass, twist, N_x, g, ensemble['tag'], ensemble['Z_T'], FLAG_dispersion = FLAG_dispersion)
             #Par_FF = calc_Parallel_FF(amp3_tags[1], heavy_q_mass, twist, N_x, g, ensemble['w0/a'])
             #Perp_FF = calc_Perpendicular_FF(amp3_tags[2], heavy_q_mass, twist, N_x, g, ensemble['w0/a'])

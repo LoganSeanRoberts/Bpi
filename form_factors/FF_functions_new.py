@@ -7,7 +7,7 @@ import collections
 ### Defining prerequisite functions ###
 #######################################
 
-def calc_Zdisc(mass_choice):  ### Got this from Will, I need to be able to explain what is going on here
+def calc_Zdisc(mass_choice):  ### Expansion of tree level mass from mass choice
     mh=float(mass_choice)
     mtree= mh * ( 1 - 3.0*mh**4 / 80.0 + 23*mh**6/2240 + 1783*mh**8/537600 - 76943*mh**10/23654400 )
     eps = ( 4 - np.sqrt( 4 + 12*mtree/( np.cosh(mtree)*np.sinh(mtree) ) )) / (np.sinh(mtree))**2 - 1
@@ -21,8 +21,8 @@ def calc_Daughter_3Momentum(twist, N_x): #twist, lattice length in lattice units
 def calc_Lattice_Current(m_mother, E_daughter, Three_pt_amp, mass_choice):
     return 2*calc_Zdisc(mass_choice) * gv.sqrt(m_mother* E_daughter)* Three_pt_amp
 
-def calc_Z_V(m_h, m_l, m_mother, m_daughter, amp_S_zerotwist, amp_V_zerotwist,  mass_choice): #I think all the a terms cancel?
-    Z_V = (m_h - m_l) / (m_mother - m_daughter) * calc_Lattice_Current(m_mother, m_daughter, amp_S_zerotwist, mass_choice) / calc_Lattice_Current(m_mother, m_daughter, amp_V_zerotwist, mass_choice)
+def calc_Z_V(m_h, m_light, m_mother, m_daughter, amp_S_zerotwist, amp_V_zerotwist,  mass_choice): #I think all the a terms cancel?
+    Z_V = (m_h - m_light) / (m_mother - m_daughter) * calc_Lattice_Current(m_mother, m_daughter, amp_S_zerotwist, mass_choice) / calc_Lattice_Current(m_mother, m_daughter, amp_V_zerotwist, mass_choice)
     return Z_V
 
 #Now we can emplement some q_sqrd equations that either use the fit posterior E_daughter for non zero twist(more uncertaint)...
@@ -88,17 +88,17 @@ def get_Scalar_stats(Scalar_amp_choice, mass_choice, twist_choice, g, spin_taste
 ### Defining Form Factor equations ###
 ######################################
 
-def calc_Scalar_FF(amp_choice, mass_choice, twist_choice, am_l, N_x,g, FLAG_dispersion = False):
+def calc_Scalar_FF(amp_choice, mass_choice, twist_choice, am_light, N_x,g, FLAG_dispersion = False):
     if 'S' in amp_choice:
         m_mother, m_daughter, E_daughter, Three_pt_amp, m_Goldstone = get_Scalar_stats(amp_choice, mass_choice, twist_choice, g, 'G5-G5', FLAG_dispersion= FLAG_dispersion, N_x = N_x)
         q_sqrd = calc_q_sqrd(m_mother,m_daughter, E_daughter, FLAG_dispersion=FLAG_dispersion, twist=twist_choice, N_x=N_x)
-        FF = calc_Lattice_Current(m_Goldstone, E_daughter, Three_pt_amp, mass_choice) * (float(mass_choice)-am_l)/((m_mother**2)-(m_daughter**2))
+        FF = calc_Lattice_Current(m_Goldstone, E_daughter, Three_pt_amp, mass_choice) * (float(mass_choice)-am_light)/((m_mother**2)-(m_daughter**2))
         #print(FF)
         return FF, q_sqrd, m_mother, m_daughter, E_daughter
     else:
         print('ERROR: Options for Scalar_FF are "SVnn" and "SsVnn". Cannot apply to {}'.format(amp_choice))
 
-def calc_tVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_dispersion = False):
+def calc_tVector_FF(amp_choice, mass_choice, twist_choice, am_light, N_x, g, FLAG_dispersion = False):
     if twist_choice == '0.0':
         return None, None, None, None, None
     else:
@@ -108,22 +108,22 @@ def calc_tVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_di
             else: 
                 Scalar_amp = 'SVnn'
             m_mother, m_daughter, E_daughter, Three_pt_amp, m_Goldstone = get_Scalar_stats(Scalar_amp, mass_choice, twist_choice, g, 'G5T-G5T',FLAG_dispersion= FLAG_dispersion, N_x = N_x)
-            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_l, N_x, g)[0]
+            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_light, N_x, g)[0]
             #Three_p_daughter = calc_Daughter_3Momentum(twist_choice, N_x)
             tVector_amp_zerotwist = g[(amp_choice+'_m'+mass_choice+'_tw0.0')][0][0]
             Scalar_amp_zerotwist = g[(Scalar_amp+'_m'+mass_choice+'_tw0.0')][0][0]
             tVector_amp = g[(amp_choice+'_m'+mass_choice+'_tw'+twist_choice)][0][0]
-            Z_V = calc_Z_V(float(mass_choice),am_l, m_mother,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
+            Z_V = calc_Z_V(float(mass_choice),am_light, m_Goldstone,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
             V_matrix = calc_Lattice_Current(m_Goldstone, E_daughter, tVector_amp, mass_choice)
             q_sqrd = calc_q_sqrd(m_Goldstone,m_daughter, E_daughter, FLAG_dispersion=FLAG_dispersion, twist=twist_choice, N_x=N_x)
             fraction = ((m_Goldstone**2-m_daughter**2)/q_sqrd)*(m_Goldstone - E_daughter)
             FF = (Z_V*V_matrix - Scalar_FF*fraction) / (m_Goldstone + E_daughter - fraction)
-            return FF, q_sqrd ,m_mother, m_daughter, E_daughter
+            return FF, q_sqrd , m_Goldstone, m_daughter, E_daughter
         else:
             print('ERROR: Options for tVector_FF are "VVnn" and "VsVnn". Cannot apply to {}'.format(amp_choice))
 
 
-def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_dispersion = False):
+def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_light, N_x, g, FLAG_dispersion = False):
     if twist_choice == '0.0':
         return None, None, None, None, None
     else:
@@ -133,12 +133,12 @@ def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_di
             else: 
                 Scalar_amp, tVector_amp = 'SVnn', 'VVnn'
             m_mother, m_daughter, E_daughter, Three_pt_amp, m_Goldstone = get_Scalar_stats(Scalar_amp, mass_choice, twist_choice, g, 'G5-G5X', FLAG_dispersion= FLAG_dispersion, N_x = N_x)
-            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_l, N_x, g)[0]
+            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_light, N_x, g)[0]
             Three_p_daughter = calc_Daughter_3Momentum(twist_choice, N_x)
             xVector_amp = g[(amp_choice+'_m'+mass_choice+'_tw'+twist_choice)][0][0]
             tVector_amp_zerotwist = g[(tVector_amp+'_m'+mass_choice+'_tw0.0')][0][0]
             Scalar_amp_zerotwist = g[(Scalar_amp+'_m'+mass_choice+'_tw0.0')][0][0]
-            Z_V = calc_Z_V(float(mass_choice),am_l, m_Goldstone,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
+            Z_V = calc_Z_V(float(mass_choice),am_light, m_Goldstone,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
             V_matrix = calc_Lattice_Current(m_Goldstone, E_daughter, xVector_amp, mass_choice)
             q_sqrd = calc_q_sqrd(m_Goldstone,m_daughter, E_daughter, FLAG_dispersion=FLAG_dispersion, twist=twist_choice, N_x=N_x)
             fraction = ((m_Goldstone**2-m_daughter**2)/q_sqrd)*(-Three_p_daughter)
@@ -149,7 +149,7 @@ def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_di
 
 ### Testing new version
 
-'''def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g_real, g_imaginary):
+'''def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_light, N_x, g_real, g_imaginary):
     if twist_choice == '0.0':
         return None, None, None, None, None
     else:
@@ -159,12 +159,12 @@ def calc_xVector_FF(amp_choice, mass_choice, twist_choice, am_l, N_x, g, FLAG_di
             else: 
                 Scalar_amp, tVector_amp = 'SVnn', 'VVnn'
             m_mother, m_daughter, E_daughter, Three_pt_amp = get_Scalar_stats(Scalar_amp, mass_choice, twist_choice, g_real)
-            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_l, N_x, g_real)[0]
+            Scalar_FF = calc_Scalar_FF(Scalar_amp, mass_choice, twist_choice, am_light, N_x, g_real)[0]
             Three_p_daughter = calc_Daughter_3Momentum(twist_choice, N_x)
             xVector_amp = g_imaginary[(amp_choice+'_m'+mass_choice+'_tw'+twist_choice)][0]
             tVector_amp_zerotwist = g_real[(tVector_amp+'_m'+mass_choice+'_tw0.0')][0]
             Scalar_amp_zerotwist = g_real[(Scalar_amp+'_m'+mass_choice+'_tw0.0')][0]
-            Z_V = calc_Z_V(float(mass_choice),am_l, m_mother,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
+            Z_V = calc_Z_V(float(mass_choice),am_light, m_mother,m_daughter, Scalar_amp_zerotwist, tVector_amp_zerotwist, mass_choice)
             V_matrix = calc_Lattice_Current(m_mother, E_daughter, xVector_amp, mass_choice)
             q_sqrd = calc_q_sqrd(m_mother, E_daughter, twist_choice, N_x)
             fraction = ((m_mother**2-m_daughter**2)/q_sqrd)
